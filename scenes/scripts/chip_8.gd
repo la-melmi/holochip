@@ -3,12 +3,13 @@ extends Node
 @export_file("*.ch8") var rom: String
 
 ## Whether to use legacy or modern behavior
-@export var legacy: bool = false
+@export var legacy: bool = true
 
 ## Clock speed to run at, in Hz
 @export var clock_speed: float = INF
 @export var ram: RAM
 @onready var display: CHIPDisplay = $Display
+@onready var keypad: CHIPKeypad = $Keypad
 
 var stack: Array[int]
 
@@ -156,22 +157,25 @@ func decode(instruction: int) -> void:
 				
 				0x5: # Subtract X - Y
 					var result: int = V[x] - V[y]
-					V[0xF] = int(result > 0)
 					V[x] = result
+					V[0xF] = int(result >= 0)
 				
 				0x6:
 					V[x] = V[y]
-					V[0xF] = V[x] & 1
+					var carry := V[x] & 1
 					V[x] >>= 1
+					V[0xF] = carry
 				
 				0x7: # Subtract Y - X
-					V[0xF] = int(V[y] > V[x])
-					V[x] = V[y] - V[x]
+					var result: int = V[y] - V[x]
+					V[x] = result
+					V[0xF] = int(result >= 0)
 				
 				0xE:
 					V[x] = V[y]
-					V[0xF] = (V[x] & 0x80) >> 7
+					var carry := (V[x] & 0x80) >> 7
 					V[x] <<= 1
+					V[0xF] = carry
 				
 				_:
 					push_error("0x%X: %X" % [PC, instruction])
