@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://8fi20pxoff6i"]
+[gd_scene load_steps=8 format=3 uid="uid://8fi20pxoff6i"]
 
 [ext_resource type="Script" path="res://scenes/scripts/chip_8.gd" id="1_li2dw"]
 [ext_resource type="Script" path="res://scenes/scripts/ram.gd" id="2_msv88"]
 [ext_resource type="Script" path="res://scenes/scripts/display.gd" id="3_8hwfk"]
 [ext_resource type="Script" path="res://scenes/scripts/keypad.gd" id="4_82j2o"]
+[ext_resource type="AudioStream" uid="uid://bmjo582yh63jw" path="res://assets/sound/beep.ogg" id="5_03kvt"]
 
 [sub_resource type="Resource" id="Resource_fkp10"]
 script = ExtResource("2_msv88")
@@ -13,7 +14,8 @@ memory = PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 [node name="CHIP-8" type="Node"]
 script = ExtResource("1_li2dw")
-rom = "res://roms/6-keypad.ch8"
+rom = "res://roms/7-beep.ch8"
+clock_speed = 60.0
 ram = SubResource("Resource_fkp10")
 
 [node name="Display" type="TextureRect" parent="."]
@@ -30,3 +32,6 @@ height = 32
 
 [node name="Keypad" type="Node" parent="."]
 script = ExtResource("4_82j2o")
+
+[node name="Beeper" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_03kvt")

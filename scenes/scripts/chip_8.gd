@@ -10,6 +10,7 @@ extends Node
 @export var ram: RAM
 @onready var display: CHIPDisplay = $Display
 @onready var keypad: CHIPKeypad = $Keypad
+@onready var beeper: AudioStreamPlayer = $Beeper
 
 var stack: Array[int]
 
@@ -54,13 +55,18 @@ func import_rom(path: String):
 
 #region Process loops
 func _physics_process(_delta) -> void:
+	if ST > 0:
+		beeper.play()
+	else:
+		beeper.stop()
+	
 	DT = max(DT - 1, 0)
 	ST = max(DT - 1, 0)
-	
-	if ST == 0:
-		pass
 
 var clock: float
+var timer: float
+
+@onready var timer_interval: float = 1.0/60.0
 
 ## Set clock interval to 0, a non-number if the clock speed is set to match the framerate
 ## Otherwise, the clock interval will be the inverse of the clock speed, unless the clock speed is 0
@@ -68,6 +74,8 @@ var clock: float
 @onready var clock_interval: float = ( 1.0 if clock_speed == INF else (1.0/clock_speed) if clock_speed else INF )
 func _process(delta) -> void:
 	if paused: return
+	
+	timer += delta
 	
 	if clock_speed == INF:
 		clock = clock_interval
@@ -78,6 +86,16 @@ func _process(delta) -> void:
 		clock -= clock_interval
 		var instruction: int = fetch()
 		decode(instruction)
+	
+	while timer >= timer_interval:
+		if ST > 0: 
+			beeper.play()
+		else:
+			beeper.stop()
+		timer -= timer_interval
+		DT = max(DT - 1, 0)
+		ST = max(DT - 1, 0)
+
 #endregion
 
 #region Fetch/Decode
