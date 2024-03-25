@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://8fi20pxoff6i"]
+[gd_scene load_steps=7 format=3 uid="uid://8fi20pxoff6i"]
 
 [ext_resource type="Script" path="res://scenes/scripts/chip_8.gd" id="1_li2dw"]
 [ext_resource type="Script" path="res://scenes/scripts/ram.gd" id="2_msv88"]
 [ext_resource type="Script" path="res://scenes/scripts/display.gd" id="3_8hwfk"]
+[ext_resource type="Script" path="res://scenes/scripts/keypad.gd" id="4_82j2o"]
 
 [sub_resource type="Resource" id="Resource_fkp10"]
 script = ExtResource("2_msv88")
@@ -12,7 +13,7 @@ memory = PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 [node name="CHIP-8" type="Node"]
 script = ExtResource("1_li2dw")
-rom = "res://roms/4-flags.ch8"
+rom = "res://roms/6-keypad.ch8"
 ram = SubResource("Resource_fkp10")
 
 [node name="Display" type="TextureRect" parent="."]
@@ -26,3 +27,6 @@ texture = SubResource("ImageTexture_wpv0w")
 script = ExtResource("3_8hwfk")
 width = 64
 height = 32
+
+[node name="Keypad" type="Node" parent="."]
+script = ExtResource("4_82j2o")

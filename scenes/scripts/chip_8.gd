@@ -214,35 +214,53 @@ func decode(instruction: int) -> void:
 			
 			display.refresh()
 		
+		0xE: # Skip if key
+			var x: int = decode_X(instruction)
+			match decode_NN(instruction):
+				0x9E:
+					if keypad.is_key_pressed(V[x]):
+						PC += 2
+				0xA1:
+					if not keypad.is_key_pressed(V[x]):
+						PC += 2
+				_:
+					push_error("0x%X: %X" % [PC, instruction])
+		
+		
 		0xF: # Multi instruction
 			var x: int = decode_X(instruction)
 			match decode_NN(instruction):
+				0x0A:
+					paused = true
+					V[x] = await keypad.key_pressed
+					paused = false
+				
 				0x07: # Set Vx to value of delay timer
 					V[x] = DT
 				0x15: # Set delay timer to value of Vx
 					DT = V[x]
 				0x18: # Set sound timer to value of Vx
 					ST = V[x]
-				0x1E:
+				0x1E: # Add to index
 					I += V[x]
-					if I >= 0x1000:
+					if I >= 0x1000: # This overflow is a weird undefined quirk
 						V[0xF] = 1
-				0x33:
+				0x33: # Binary to decimal conversion
 					var num := V[x]
 					ram.write(I, num / 100)
 					ram.write(I + 1, (num / 10) % 10)
 					ram.write(I + 2, num % 10)
-				0x55:
+				0x55: # Store in memory
 					for i in x + 1:
 						if legacy:
 							ram.write(I, V[i])
 							I += 1
 						else:
 							ram.write(I + i, V[i])
-				0x65:
+				0x65: # Load from memory
 					for i in x + 1:
 						if legacy:
-							V[I] = ram.read(I)
+							V[i] = ram.read(I)
 							I += 1
 						else:
 							V[i] = ram.read(I + i)
