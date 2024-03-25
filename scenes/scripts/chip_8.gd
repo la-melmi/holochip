@@ -1,5 +1,7 @@
 extends Node
 
+signal refreshed
+
 @export_file("*.ch8") var rom: String
 @export_file("*.bin") var font: String
 
@@ -95,6 +97,8 @@ func _physics_process(_delta) -> void:
 	ST = max(DT - 1, 0)
 	
 	display.refresh()
+	
+	refreshed.emit()
 
 var clock: float
 var timer: float
@@ -190,12 +194,15 @@ func decode(instruction: int) -> void:
 				
 				0x1: # Bitwise OR
 					V[x] = V[x] | V[y]
+					V[0xF] = 0
 				
 				0x2: # Bitwise AND
 					V[x] = V[x] & V[y]
+					V[0xF] = 0
 				
 				0x3: # Bitwise XOR
 					V[x] = V[x] ^ V[y]
+					V[0xF] = 0
 				
 				0x4: # Add
 					var result := V[x] + V[y]
@@ -244,6 +251,10 @@ func decode(instruction: int) -> void:
 			V[decode_X(instruction)] = randi() & decode_NN(instruction)
 		
 		0xD: # Draw
+			paused = true
+			await refreshed
+			paused = false
+			
 			V[0xF] = 0
 			
 			var x: int = V[decode_X(instruction)] % display.width

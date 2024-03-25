@@ -14,7 +14,7 @@ memory = PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 [node name="CHIP-8" type="Node"]
 script = ExtResource("1_li2dw")
-rom = "res://roms/test-suite/random_number_test.ch8"
+rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
 ram = SubResource("Resource_fkp10")
 
 [node name="Display" type="TextureRect" parent="."]
@@ -24,6 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = SubResource("ImageTexture_wpv0w")
 script = ExtResource("3_8hwfk")
 width = 64
