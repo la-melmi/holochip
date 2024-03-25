@@ -14,8 +14,7 @@ memory = PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 [node name="CHIP-8" type="Node"]
 script = ExtResource("1_li2dw")
-rom = "res://roms/7-beep.ch8"
-clock_speed = 60.0
+rom = "res://roms/test-suite/random_number_test.ch8"
 ram = SubResource("Resource_fkp10")
 
 [node name="Display" type="TextureRect" parent="."]
@@ -35,3 +34,4 @@ script = ExtResource("4_82j2o")
 
 [node name="Beeper" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_03kvt")
+volume_db = -80.0

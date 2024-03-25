@@ -1,6 +1,7 @@
 extends Node
 
 @export_file("*.ch8") var rom: String
+@export_file("*.bin") var font: String
 
 ## Whether to use legacy or modern behavior
 @export var legacy: bool = true
@@ -13,6 +14,25 @@ extends Node
 @onready var beeper: AudioStreamPlayer = $Beeper
 
 var stack: Array[int]
+
+var default_font := PackedByteArray([
+	0xF0, 0x90, 0x90, 0x90, 0xF0, # 0
+	0x20, 0x60, 0x20, 0x20, 0x70, # 1
+	0xF0, 0x10, 0xF0, 0x80, 0xF0, # 2
+	0xF0, 0x10, 0xF0, 0x10, 0xF0, # 3
+	0x90, 0x90, 0xF0, 0x10, 0x10, # 4
+	0xF0, 0x80, 0xF0, 0x10, 0xF0, # 5
+	0xF0, 0x80, 0xF0, 0x90, 0xF0, # 6
+	0xF0, 0x10, 0x20, 0x40, 0x40, # 7
+	0xF0, 0x90, 0xF0, 0x90, 0xF0, # 8
+	0xF0, 0x90, 0xF0, 0x10, 0xF0, # 9
+	0xF0, 0x90, 0xF0, 0x90, 0x90, # A
+	0xE0, 0x90, 0xE0, 0x90, 0xE0, # B
+	0xF0, 0x80, 0x80, 0x80, 0xF0, # C
+	0xE0, 0x90, 0x90, 0x90, 0xE0, # D
+	0xF0, 0x80, 0xF0, 0x80, 0xF0, # E
+	0xF0, 0x80, 0xF0, 0x80, 0x80  # F
+])
 
 #region Register definitions
 var V := PackedByteArray()
@@ -38,20 +58,31 @@ var ST: int:
 func _input(event):
 	if event.is_action_pressed("ui_accept"):
 		paused = not paused
+	if event.is_action_pressed("debug"):
+		pass
 
 func _ready() -> void:
 	V.resize(16)
 	
+	if font:
+		import_bin(0x50, font)
+	else:
+		var pointer := 0x50
+		for byte in default_font:
+			ram.write(pointer, byte)
+			pointer += 1
+	
 	if rom:
-		import_rom(rom)
+		import_bin(0x200, rom)
 
-func import_rom(path: String):
+func import_bin(pointer: int, path: String) -> int:
 	var file := FileAccess.open(path, FileAccess.READ)
-	var import_pointer: int = 0x200
 	
 	while file.get_position() < file.get_length():
-		ram.write(import_pointer, file.get_8())
-		import_pointer += 1
+		ram.write(pointer, file.get_8())
+		pointer += 1
+	
+	return pointer
 
 #region Process loops
 func _physics_process(_delta) -> void:
@@ -62,6 +93,8 @@ func _physics_process(_delta) -> void:
 	
 	DT = max(DT - 1, 0)
 	ST = max(DT - 1, 0)
+	
+	display.refresh()
 
 var clock: float
 var timer: float
@@ -106,18 +139,17 @@ func fetch() -> int:
 	return (first_byte*256) | second_byte
 
 func decode(instruction: int) -> void:
-	var opcode: int = (instruction & 61440) >> 12
+	var nibble: int = (instruction & 61440) >> 12
 	
 	#print("0x%X: 0x%X" % [PC, opcode])
 	
-	match opcode:
+	match nibble:
 		0x0: # Multiple instructions
 			match decode_NNN(instruction):
 				0x0E0: # Clear screen
 					for x in display.width:
 						for y in display.height:
 							display.clear_pixel(x, y)
-					display.refresh()
 				0x0EE: # Return from subroutine
 					PC = stack.pop_back()
 				_:
@@ -229,8 +261,6 @@ func decode(instruction: int) -> void:
 					sprite <<= 1
 				
 				if (y + row + 1) >= display.height: break
-			
-			display.refresh()
 		
 		0xE: # Skip if key
 			var x: int = decode_X(instruction)
@@ -263,6 +293,8 @@ func decode(instruction: int) -> void:
 					I += V[x]
 					if I >= 0x1000: # This overflow is a weird undefined quirk
 						V[0xF] = 1
+				0x29: # Get font character
+					I = 0x50 + (V[decode_X(instruction)] * 5)
 				0x33: # Binary to decimal conversion
 					var num := V[x]
 					ram.write(I, num / 100)
