@@ -14,7 +14,8 @@ memory = PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 [node name="CHIP-8" type="Node"]
 script = ExtResource("1_li2dw")
-rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
+rom = "res://roms/tests/2-ibm-logo.ch8"
+clock_speed = 700.0
 ram = SubResource("Resource_fkp10")
 
 [node name="Display" type="TextureRect" parent="."]

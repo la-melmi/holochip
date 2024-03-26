@@ -2,7 +2,7 @@ extends Node
 
 signal refreshed
 
-@export_file("*.ch8") var rom: String
+@export_file("*.ch8", "*.bin") var rom: String
 @export_file("*.bin") var font: String
 
 ## Whether to use legacy or modern behavior
