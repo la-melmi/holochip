@@ -15,6 +15,9 @@ func _ready() -> void:
 
 func _on_chip_refresh() -> void:
 	#mesh_instance["surface_material_override/0"].albedo_texture = display.texture
+	refresh.call_deferred()
+
+func refresh() -> void:
 	for x in display.width:
 		for y in display.height:
 			if display.get_pixel(x, y):
