@@ -38,7 +38,7 @@ process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 script = ExtResource("4_x8ixd")
-rom = "res://roms/revival-studios/games/Bowling [Gooitzen van der Wal].ch8"
+rom = "res://roms/tests/3-corax+.ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 

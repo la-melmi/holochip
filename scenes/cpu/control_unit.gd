@@ -55,6 +55,12 @@ func step() -> void:
 	execute(instruction)
 
 
+const X := &"X"
+const Y := &"Y"
+const N := &"N"
+const NN := &"NN"
+const NNN := &"NNN"
+
 func fetch() -> int:
 	return ram.read_16(PC)
 
@@ -76,97 +82,97 @@ func execute(instruction) -> void:
 			PC = stack.pop_back()
 		
 		&"1NNN": # Jump
-			PC = args.NNN
+			PC = args[NNN]
 		
 		&"2NNN": # Call subroutine
 			stack.append(PC)
-			PC = args.NNN
+			PC = args[NNN]
 		
 		&"3XNN": # Skip if Vx == NN
-			if V[args.X] == args.NN:
+			if V[args[X]] == args[NN]:
 				PC += 2
 		
 		&"4XNN": # Skip if Vx != NN
-			if V[args.X] != args.NN:
+			if V[args[X]] != args[NN]:
 				PC += 2
 		
 		&"5XY0": # Skip if Vx == Vy
-			if V[args.X] == args.Y:
+			if V[args[X]] == args[Y]:
 				PC += 2
 		
 		&"6XNN": # Set
-			V[args.X] = args.NN
+			V[args[X]] = args[NN]
 		
 		&"7XNN": # Add
-			V[args.X] += args.NN
+			V[args[X]] += args[NN]
 		
 		#region Logic and arithmetic (8XY.)
 		&"8XY0": # Set
-			V[args.X] = V[args.Y]
+			V[args[X]] = V[args[Y]]
 		
 		&"8XY1": # Bitwise OR
-			V[args.X] = V[args.X] | V[args.Y]
+			V[args[X]] = V[args[X]] | V[args[Y]]
 			V[0xF] = 0
 		
 		&"8XY2": # Bitwise AND
-			V[args.X] = V[args.X] & V[args.Y]
+			V[args[X]] = V[args[X]] & V[args[Y]]
 			V[0xF] = 0
 		
 		&"8XY3": # Bitwise XOR
-			V[args.X] = V[args.X] ^ V[args.Y]
+			V[args[X]] = V[args[X]] ^ V[args[Y]]
 			V[0xF] = 0
 		
 		&"8XY4": # Add
-			var result := V[args.X] + V[args.Y]
-			V[args.X] = result
+			var result := V[args[X]] + V[args[Y]]
+			V[args[X]] = result
 			if result > 255:
 				V[0xF] = 1
 			else:
 				V[0xF] = 0
 		
 		&"8XY5": # Subtract X - Y
-			var result: int = V[args.X] - V[args.Y]
-			V[args.X] = result
+			var result: int = V[args[X]] - V[args[Y]]
+			V[args[X]] = result
 			V[0xF] = int(result >= 0)
 		
 		&"8XY6":
-			V[args.X] = V[args.Y]
-			var carry := V[args.X] & 1
-			V[args.X] >>= 1
+			V[args[X]] = V[args[Y]]
+			var carry := V[args[X]] & 1
+			V[args[X]] >>= 1
 			V[0xF] = carry
 		
 		&"8XY7": # Subtract Y - X
-			var result: int = V[args.Y] - V[args.X]
-			V[args.X] = result
+			var result: int = V[args[Y]] - V[args[X]]
+			V[args[X]] = result
 			V[0xF] = int(result >= 0)
 		
 		&"8XYE":
-			V[args.X] = V[args.Y]
-			var carry := (V[args.X] & 0x80) >> 7
-			V[args.X] <<= 1
+			V[args[X]] = V[args[Y]]
+			var carry := (V[args[X]] & 0x80) >> 7
+			V[args[X]] <<= 1
 			V[0xF] = carry
 		#endregion
 		
 		&"9XY0": # Skip if Vx != Vy
-			if V[args.X] != V[args.Y]:
+			if V[args[X]] != V[args[Y]]:
 				PC += 2
 		
 		&"ANNN": # Set Index
-			I = args.NNN
+			I = args[NNN]
 		
 		&"BNNN": # Jump with offset
-			PC = args.NNN + V[0]
+			PC = args[NNN] + V[0]
 		
 		&"CXNN": # Random
-			V[args.X] = randi() & args.NN
+			V[args[X]] = randi() & args[NN]
 		
 		&"DXYN": # Draw
 			V[0xF] = 0
 			
-			var x: int = V[args.X] % display.width
-			var y: int = V[args.Y] % display.height
+			var x: int = V[args[X]] % display.width
+			var y: int = V[args[Y]] % display.height
 			
-			for row in args.N:
+			for row in args[N]:
 				var sprite: int = ram.read(row + I)
 				
 				for col in 8:
@@ -181,41 +187,41 @@ func execute(instruction) -> void:
 		
 		
 		&"EX9E": # skip if key
-			if keypad.is_key_pressed(V[args.X]):
+			if keypad.is_key_pressed(V[args[X]]):
 				PC += 2
 		&"EXA1": # Skip if not key
-			if not keypad.is_key_pressed(V[args.X]):
+			if not keypad.is_key_pressed(V[args[X]]):
 				PC += 2
 		
 		&"FX0A":
 			keypad.wait_until_press()
 		
 		&"FX07": # Set Vx to value of delay timer
-			V[args.X] = DT
+			V[args[X]] = DT
 		&"FX15": # Set delay timer to value of Vx
-			DT = V[args.X]
+			DT = V[args[X]]
 		&"FX18": # Set sound timer to value of Vx
-			ST = V[args.X]
+			ST = V[args[X]]
 		&"FX1E": # Add to index
-			I += V[args.X]
+			I += V[args[X]]
 			if I >= 0x1000: # This overflow is a weird undefined quirk
 				V[0xF] = 1
 		&"FX29": # Get font character
-			I = 0x50 + (V[args.X] * 5)
+			I = 0x50 + (V[args[X]] * 5)
 		&"FX33": # Binary to decimal conversion
-			var num := V[args.X]
+			var num := V[args[X]]
 			ram.write(I, num / 100)
 			ram.write(I + 1, (num / 10) % 10)
 			ram.write(I + 2, num % 10)
 		&"FX55": # Store in memory
-			for i in args.X + 1:
+			for i in args[X] + 1:
 				if legacy:
 					ram.write(I, V[i])
 					I += 1
 				else:
 					ram.write(I + i, V[i])
 		&"FX65": # Load from memory
-			for i in args.X + 1:
+			for i in args[X] + 1:
 				if legacy:
 					V[i] = ram.read(I)
 					I += 1
