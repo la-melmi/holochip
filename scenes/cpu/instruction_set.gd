@@ -1,366 +1,366 @@
 extends Object
 
-const INSTRUCTION_SET := [
-	{
-		&"id" : &"CLS", # Clear
-		&"name" : &"00E0",
-		&"mask" : 0xffff,
-		&"pattern" : 0x00E0,
-		&"arguments" : [],
-	},
-	{
-		&"id" : &"RET", # Return
-		&"name" : &"00EE",
-		&"mask" : 0xffff,
-		&"pattern" : 0x00EE,
-		&"arguments" : [],
-	},
-	{
-		&"id" : &"JP_ADDR", # Jump
-		&"name" : &"1NNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x1000,
-		&"arguments" : [
-			{ &"mask" : 0x0fff, &"shift" : 0, &"type" : &"NNN" }
+
+var X := ArgumentType.new( 0x0f00, 8, &"X" )
+var Y := ArgumentType.new( 0x00f0, 4, &"Y" )
+var N := ArgumentType.new( 0x000f, 0, &"N" )
+var NN := ArgumentType.new( 0x00ff, 0, &"NN" )
+var NNN := ArgumentType.new( 0x0fff, 0, &"NNN" )
+
+
+var INSTRUCTION_SET = [
+	Instruction.new(
+		&"CLS", # Clear
+		&"00E0",
+		0xffff,
+		0x00E0,
+		[]
+	),
+	Instruction.new(
+		&"RET", # Return
+		&"00EE",
+		0xffff,
+		0x00EE,
+		[],
+	),
+	Instruction.new(
+		&"JP_ADDR", # Jump
+		&"1NNN",
+		0xf000,
+		0x1000,
+		[
+			NNN
 		],
-	},
-	{
-		&"id" : &"CALL_ADDR", # Call
-		&"name" : &"2NNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x2000,
-		&"arguments" : [
-			{ &"mask" : 0x0fff, &"shift" : 0, &"type" : &"NNN" }
+	),
+	Instruction.new(
+		&"CALL_ADDR", # Call
+		&"2NNN",
+		0xf000,
+		0x2000,
+		[
+			NNN
 		],
-	},
-	{
-		&"id" : &"SE_VX_NN", # Skip next if Vx == NN
-		&"name" : &"3XNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x3000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00ff, &"shift" : 0, &"type" : &"NN" }
+	),
+	Instruction.new(
+		&"SE_VX_NN", # Skip next if Vx == NN
+		&"3XNN",
+		0xf000,
+		0x3000,
+		[
+			X,
+			NN
 		],
-	},
-	{
-		&"id" : &"SNE_VX_NN", # Skip next if Vx != NN
-		&"name" : &"4XNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x4000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00ff, &"shift" : 0, &"type" : &"NN" }
+	),
+	Instruction.new(
+		&"SNE_VX_NN", # Skip next if Vx != NN
+		&"4XNN",
+		0xf000,
+		0x4000,
+		[
+			X,
+			NN
 		],
-	},
-	{
-		&"id" : &"SE_VX_VY", # Skip next if Vx == Vy
-		&"name" : &"5XY0",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x5000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SE_VX_VY", # Skip next if Vx == Vy
+		&"5XY0",
+		0xf00f,
+		0x5000,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"LD_VX_NN", # Vx = NN
-		&"name" : &"6XNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x6000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00ff, &"shift" : 0, &"type" : &"NN" }
+	),
+	Instruction.new(
+		&"LD_VX_NN", # Vx = NN
+		&"6XNN",
+		0xf000,
+		0x6000,
+		[
+			X,
+			NN
 		],
-	},
-	{
-		&"id" : &"ADD_VX_NN", # Vx += NN
-		&"name" : &"7XNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0x7000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00ff, &"shift" : 0, &"type" : &"NN" }
+	),
+	Instruction.new(
+		&"ADD_VX_NN", # Vx += NN
+		&"7XNN",
+		0xf000,
+		0x7000,
+		[
+			X,
+			NN
 		],
-	},
-	{
-		&"id" : &"LD_VX_VY", # Vx = Vy
-		&"name" : &"8XY0",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"LD_VX_VY", # Vx = Vy
+		&"8XY0",
+		0xf00f,
+		0x8000,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"OR_VX_VY", # Vx |= Vy
-		&"name" : &"8XY1",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8001,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"OR_VX_VY", # Vx |= Vy
+		&"8XY1",
+		0xf00f,
+		0x8001,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"AND_VX_VY", # Vx &= Vy
-		&"name" : &"8XY2",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8002,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"AND_VX_VY", # Vx &= Vy
+		&"8XY2",
+		0xf00f,
+		0x8002,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"XOR_VX_VY", # Vx ^= Vy
-		&"name" : &"8XY3",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8003,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"XOR_VX_VY", # Vx ^= Vy
+		&"8XY3",
+		0xf00f,
+		0x8003,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"ADD_VX_VY", # Vx += Vy
-		&"name" : &"8XY4",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8004,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"ADD_VX_VY", # Vx += Vy
+		&"8XY4",
+		0xf00f,
+		0x8004,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"SUB_VX_VY", # Vx -= Vy
-		&"name" : &"8XY5",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8005,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SUB_VX_VY", # Vx -= Vy
+		&"8XY5",
+		0xf00f,
+		0x8005,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"SHR_VX_VY", # Vx >>= Vy
-		&"name" : &"8XY6",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8006,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SHR_VX_VY", # Vx >>= Vy
+		&"8XY6",
+		0xf00f,
+		0x8006,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"SUBN_VX_VY", # Vx = Vy - Vx
-		&"name" : &"8XY7",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x8007,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SUBN_VX_VY", # Vx = Vy - Vx
+		&"8XY7",
+		0xf00f,
+		0x8007,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"SHL_VX_VY", # Vx <<= Vy
-		&"name" : &"8XYE",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x800E,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SHL_VX_VY", # Vx <<= Vy
+		&"8XYE",
+		0xf00f,
+		0x800E,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"SNE_VX_VY", # Skip next if Vx != Vy
-		&"name" : &"9XY0",
-		&"mask" : 0xf00f,
-		&"pattern" : 0x9000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" }
+	),
+	Instruction.new(
+		&"SNE_VX_VY", # Skip next if Vx != Vy
+		&"9XY0",
+		0xf00f,
+		0x9000,
+		[
+			X,
+			Y
 		],
-	},
-	{
-		&"id" : &"LD_I_ADDR", # Set I to point to ADDR
-		&"name" : &"ANNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0xA000,
-		&"arguments" : [
-			{ &"mask" : 0x0fff, &"shift" : 0, &"type" : &"NNN" }
+	),
+	Instruction.new(
+		&"LD_I_ADDR", # Set I to point to ADDR
+		&"ANNN",
+		0xf000,
+		0xA000,
+		[
+			NNN
 		],
-	},
-	{
-		&"id" : &"JP_V0_ADDR", # Jump to ADDR + V0
-		&"name" : &"BNNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0xB000,
-		&"arguments" : [
-			{ &"mask" : 0x0fff, &"shift" : 0, &"type" : &"NNN" }
+	),
+	Instruction.new(
+		&"JP_V0_ADDR", # Jump to ADDR + V0
+		&"BNNN",
+		0xf000,
+		0xB000,
+		[
+			NNN
 		],
-	},
-	{
-		&"id" : &"RND_VX_NN", # Vx = randi() & NN
-		&"name" : &"CXNN",
-		&"mask" : 0xf000,
-		&"pattern" : 0xC000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00ff, &"shift" : 0, &"type" : &"NN" }
+	),
+	Instruction.new(
+		&"RND_VX_NN", # Vx = randi() & NN
+		&"CXNN",
+		0xf000,
+		0xC000,
+		[
+			X,
+			NN
 		],
-	},
-	{
-		&"id" : &"DRW_VX_VY_N", # Draw N-byte sprite at mem pointer I at (Vx, Vy)
-		&"name" : &"DXYN",
-		&"mask" : 0xf000,
-		&"pattern" : 0xD000,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" },
-			{ &"mask" : 0x00f0, &"shift" : 4, &"type" : &"Y" },
-			{ &"mask" : 0x000f, &"shift" : 0, &"type" : &"N" }
+	),
+	Instruction.new(
+		&"DRW_VX_VY_N", # Draw N-byte sprite at mem pointer I at (Vx, Vy)
+		&"DXYN",
+		0xf000,
+		0xD000,
+		[
+			X,
+			Y,
+			N
 		],
-	},
-	{
-		&"id" : &"SKP_VX", # Skip next if key Vx is pressed
-		&"name" : &"EX9E",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xe09e,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"SKP_VX", # Skip next if key Vx is pressed
+		&"EX9E",
+		0xf0ff,
+		0xe09e,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"SKNP_VX", # Skip next if key Vx is not pressed
-		&"name" : &"EXA1",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xe0a1,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"SKNP_VX", # Skip next if key Vx is not pressed
+		&"EXA1",
+		0xf0ff,
+		0xe0a1,
+		[
+			X
 		],
-	},
+	),
 	
 	## 0xF000
-	{
-		&"id" : &"LD_VX_DT", # Vx = DT
-		&"name" : &"FX07",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf007,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	Instruction.new(
+		&"LD_VX_DT", # Vx = DT
+		&"FX07",
+		0xf0ff,
+		0xf007,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_VX_K", # Wait for key press, store key in Vx
-		&"name" : &"FX0A",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf00a,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_VX_K", # Wait for key press, store key in Vx
+		&"FX0A",
+		0xf0ff,
+		0xf00a,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_DT_VX", # DT = Vx
-		&"name" : &"FX15",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf015,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_DT_VX", # DT = Vx
+		&"FX15",
+		0xf0ff,
+		0xf015,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_VX_ST", # Vx = ST
-		&"name" : &"FX18",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf018,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_VX_ST", # Vx = ST
+		&"FX18",
+		0xf0ff,
+		0xf018,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"ADD_I_VX", # I += Vx
-		&"name" : &"FX1E",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf01e,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"ADD_I_VX", # I += Vx
+		&"FX1E",
+		0xf0ff,
+		0xf01e,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_F_Vx", # I = location of font character corresponding to digit in Vx
-		&"name" : &"FX29",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf029,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_F_Vx", # I = location of font character corresponding to digit in Vx
+		&"FX29",
+		0xf0ff,
+		0xf029,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_B_VX", # Break num in Vx into decimal digits, placed in memory locations I, I+1, I+2
-		&"name" : &"FX33",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf033,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_B_VX", # Break num in Vx into decimal digits, placed in memory locations I, I+1, I+2
+		&"FX33",
+		0xf0ff,
+		0xf033,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_I_VX", # Store registers V0-Vx in memory starting at pointer I
-		&"name" : &"FX55",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf055,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_I_VX", # Store registers V0-Vx in memory starting at pointer I
+		&"FX55",
+		0xf0ff,
+		0xf055,
+		[
+			X
 		],
-	},
-	{
-		&"id" : &"LD_VX_I", # Read registers V0-Vx from memory starting at pointer I
-		&"name" : &"FX65",
-		&"mask" : 0xf0ff,
-		&"pattern" : 0xf065,
-		&"arguments" : [
-			{ &"mask" : 0x0f00, &"shift" : 8, &"type" : &"X" }
+	),
+	Instruction.new(
+		&"LD_VX_I", # Read registers V0-Vx from memory starting at pointer I
+		&"FX65",
+		0xf0ff,
+		0xf065,
+		[
+			X
 		],
-	},
+	),
 ]
 
-const INVALID_INSTRUCTION := {&"id" : &"INVALID", &"name" : "", &"arguments" : []}
+var INVALID_INSTRUCTION := Instruction.new( &"INVALID", "", 0, 0, [] )
 
-const ID := &"id"
-const NAME := &"name"
-const MASK := &"mask"
-const PATTERN := &"pattern"
-const ARGS := &"arguments"
-const SHIFT := &"shift"
-const TYPE := &"type"
+func filter_instructions(instruction: Instruction, opcode: int) -> bool:
+	return (opcode & instruction.mask) == instruction.pattern
 
-func filter_instructions(instruction: Dictionary, opcode: int) -> bool:
-	return (opcode & instruction[MASK]) == instruction[PATTERN]
-
-func map_args(opcode: int, args: Array) -> Dictionary:
-	var result := {}
+func map_args(opcode: int, args: Array) -> Arguments:
+	var result := Arguments.new()
 	
 	for arg in args:
-		result[arg[TYPE]] = (opcode & arg[MASK]) >> arg[SHIFT]
+		result[arg.type] = (opcode & arg.mask) >> arg.shift
 		
 	return result
 
 
-func find(opcode: int) -> Dictionary:
+func find(opcode: int) -> Instruction:
 	var matches := INSTRUCTION_SET.filter(filter_instructions.bind(opcode))
 	
 	if matches.size() > 1:
 		push_error("Too many matches for 0x%X" % opcode)
 		for m in matches:
-			push_error("Opcode: %X matched %s (Pattern 0x%x, mask 0x%x)" % [opcode, m[NAME], m[PATTERN], m[MASK]])
-		push_error("Returning first match: %s" % matches[0][NAME])
+			push_error("Opcode: %X matched %s (Pattern 0x%x, mask 0x%x)" % [opcode, m.name, m.pattern, m.mask])
+		push_error("Returning first match: %s" % matches[0].name)
 		return matches[0]
 	
 	elif matches.size() == 0:
 		push_error("No matches for opcode: 0x%X" % opcode)
 		var invalid := INVALID_INSTRUCTION.duplicate()
-		invalid[NAME] = "%X" % opcode
+		invalid.name = "%X" % opcode
 		return invalid
 	
 	else:
@@ -370,4 +370,39 @@ func disassemble(opcode) -> Array:
 	var instruction := find(opcode)
 	var args := map_args(opcode, instruction.arguments)
 	
-	return [instruction[NAME], args]
+	return [instruction.name, args]
+
+
+class Instruction:
+	var id: StringName
+	var name: StringName
+	var mask: int
+	var pattern: int
+	var arguments: Array[ArgumentType]
+	
+	func _init(_id: StringName, _name: StringName, _mask: int, _pattern: int, _args: Array[ArgumentType]) -> void:
+		id = _id
+		name = _name
+		mask = _mask
+		pattern = _pattern
+		arguments = _args
+	
+	func duplicate() -> Instruction:
+		return Instruction.new(id, name, mask, pattern, arguments)
+
+class ArgumentType:
+	var mask: int
+	var shift: int
+	var type: StringName
+	
+	func _init(_mask: int, _shift: int, _type: StringName) -> void:
+		mask = _mask
+		shift = _shift
+		type = _type
+
+class Arguments:
+	var X: int
+	var Y: int
+	var N: int
+	var NN: int
+	var NNN: int

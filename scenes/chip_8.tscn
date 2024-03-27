@@ -38,13 +38,13 @@ process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 script = ExtResource("4_x8ixd")
-rom = "res://roms/tests/3-corax+.ch8"
+rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 
 [node name="Clock" type="Node" parent="CPU"]
 script = ExtResource("6_mfduj")
-clockspeed = 700.0
+clockspeed = 1000.0
 
 [node name="ControlUnit" type="Node" parent="CPU" node_paths=PackedStringArray("display", "clock", "keypad")]
 script = ExtResource("7_l2uid")

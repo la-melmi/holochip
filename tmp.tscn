@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ibwsbsbq7g1a"]
+
+[ext_resource type="Script" path="res://scenes/cpu/clock.gd" id="1_sauly"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_sauly")
+clockspeed = 45.0
