@@ -73,3 +73,26 @@ func is_key_pressed(key: int) -> bool:
 		0xF:
 			return Input.is_action_pressed("keypad_F")
 	return false
+
+func is_any_key_pressed() -> bool:
+	return Input.is_action_pressed("keypad_0") \
+			or Input.is_action_pressed("keypad_1") \
+			or Input.is_action_pressed("keypad_2") \
+			or Input.is_action_pressed("keypad_3") \
+			or Input.is_action_pressed("keypad_4") \
+			or Input.is_action_pressed("keypad_5") \
+			or Input.is_action_pressed("keypad_6") \
+			or Input.is_action_pressed("keypad_7") \
+			or Input.is_action_pressed("keypad_8") \
+			or Input.is_action_pressed("keypad_9") \
+			or Input.is_action_pressed("keypad_A") \
+			or Input.is_action_pressed("keypad_B") \
+			or Input.is_action_pressed("keypad_C") \
+			or Input.is_action_pressed("keypad_D") \
+			or Input.is_action_pressed("keypad_E") \
+			or Input.is_action_pressed("keypad_F")
+
+func wait_until_press() -> void:
+	while not is_any_key_pressed(): pass
+	while is_any_key_pressed(): pass
+	return
