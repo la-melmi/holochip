@@ -7,6 +7,7 @@ extends Node
 
 @export var ram: RAM
 @export var clock: Clock
+@export var display: CHIPDisplay
 
 var default_font := PackedByteArray([
 	0xF0, 0x90, 0x90, 0x90, 0xF0, # 0

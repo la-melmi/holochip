@@ -11,7 +11,31 @@
 
 [sub_resource type="ImageTexture" id="ImageTexture_wpv0w"]
 
-[node name="CHIP-8" type="Node"]
+[node name="CHIP-8" type="Node" node_paths=PackedStringArray("clock", "display")]
+script = ExtResource("4_x8ixd")
+rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
+ram = ExtResource("8_arboy")
+clock = NodePath("Clock")
+display = NodePath("Display")
+
+[node name="Clock" type="Node" parent="."]
+script = ExtResource("6_mfduj")
+clockspeed = 2000.0
+
+[node name="Keypad" type="Node" parent="."]
+script = ExtResource("4_82j2o")
+
+[node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad")]
+script = ExtResource("7_l2uid")
+instruction_set = ExtResource("8_p4xvt")
+display = NodePath("../Display")
+clock = NodePath("../Clock")
+keypad = NodePath("../Keypad")
+ram = ExtResource("8_arboy")
+
+[node name="Beeper" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_03kvt")
+volume_db = -80.0
 
 [node name="Display" type="TextureRect" parent="."]
 texture_filter = 1
@@ -25,31 +49,3 @@ texture = SubResource("ImageTexture_wpv0w")
 script = ExtResource("3_8hwfk")
 width = 64
 height = 32
-
-[node name="Beeper" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_03kvt")
-volume_db = -80.0
-
-[node name="Keypad" type="Node" parent="."]
-script = ExtResource("4_82j2o")
-
-[node name="CPU" type="Node" parent="." node_paths=PackedStringArray("clock")]
-process_thread_group = 2
-process_thread_group_order = 0
-process_thread_messages = 0
-script = ExtResource("4_x8ixd")
-rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
-ram = ExtResource("8_arboy")
-clock = NodePath("Clock")
-
-[node name="Clock" type="Node" parent="CPU"]
-script = ExtResource("6_mfduj")
-clockspeed = 1000.0
-
-[node name="ControlUnit" type="Node" parent="CPU" node_paths=PackedStringArray("display", "clock", "keypad")]
-script = ExtResource("7_l2uid")
-instruction_set = ExtResource("8_p4xvt")
-display = NodePath("../../Display")
-clock = NodePath("../Clock")
-keypad = NodePath("../../Keypad")
-ram = ExtResource("8_arboy")
