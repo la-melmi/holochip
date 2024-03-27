@@ -1,6 +1,8 @@
 class_name CHIPDisplay
 extends TextureRect
 
+signal refreshed
+
 @onready var framebuffer := BitMap.new()
 var mutex := Mutex.new()
 
@@ -44,3 +46,9 @@ func refresh() -> void:
 	mutex.lock()
 	texture.update(framebuffer.convert_to_image())
 	mutex.unlock()
+	refreshed.emit()
+
+
+func wait_for_vblank() -> void:
+	while mutex.try_lock():
+		mutex.unlock()

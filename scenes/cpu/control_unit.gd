@@ -167,7 +167,7 @@ func execute(instruction) -> void:
 			V[args.X] = randi() & args.NN
 		
 		&"DXYN": # Draw
-			
+			display.wait_for_vblank()
 			
 			V[0xF] = 0
 			
