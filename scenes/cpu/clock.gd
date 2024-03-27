@@ -28,7 +28,8 @@ func _exit_tree() -> void:
 
 func stop() -> void:
 	running = false
-	if thread: thread.wait_to_finish()
+	if thread:
+		if thread.is_alive(): thread.wait_to_finish()
 
 func start() -> void:
 	if thread: stop()
@@ -51,16 +52,16 @@ func loop() -> void:
 		
 		if time % _timer_interval == 0:
 			for callback in timer_callbacks:
-				callback.call()
+				await callback.call()
 		
 		if time % _tick_interval == 0:
 			if time - last_tick != _tick_interval:
 				var time_loss := time - last_tick
-				if time_loss >= 1000:
+				if time_loss > 1000:
 					push_warning("Time loss of %d usec!" % time_loss)
 			last_tick = time
 			
 			for callback in callbacks:
-				callback.call()
+				await callback.call()
 		
 		last = time
