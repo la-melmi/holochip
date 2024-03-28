@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 
 
 var X := ArgumentType.new( 0x0f00, 8, &"X" )
