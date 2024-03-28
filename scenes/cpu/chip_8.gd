@@ -3,7 +3,7 @@ extends Node
 
 
 @export_group("Imports")
-@export_file("*.ch8", "*.bin") var rom: String
+@export_file("*.ch8", "*.sc8", "*.bin") var rom: String
 @export_file("*.bin") var font: String
 
 @export_group("Connected Nodes")
