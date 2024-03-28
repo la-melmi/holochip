@@ -85,9 +85,9 @@ func loop() -> void:
 
 
 func _physics_process(_delta) -> void:
-	if run_in_physics:
+	if run_in_physics and running and not paused:
 		for callback in timer_callbacks:
-			await callback.call()
+			callback.call()
 		
 		for i in _cycles_per_frame:
 			for callback in callbacks:
