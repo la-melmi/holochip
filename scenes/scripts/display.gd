@@ -43,7 +43,8 @@ func clear_pixel(x: int, y: int) -> void:
 
 func refresh() -> void:
 	mutex.lock()
-	texture.update(framebuffer.convert_to_image())
+	if visible:
+		texture.update(framebuffer.convert_to_image())
 	mutex.unlock()
 	refreshed.emit()
 
