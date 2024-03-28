@@ -1,41 +1,54 @@
-[gd_scene load_steps=10 format=3 uid="uid://8fi20pxoff6i"]
+[gd_scene load_steps=12 format=3 uid="uid://8fi20pxoff6i"]
 
 [ext_resource type="Script" path="res://scenes/scripts/display.gd" id="3_8hwfk"]
 [ext_resource type="Script" path="res://scenes/scripts/keypad.gd" id="4_82j2o"]
 [ext_resource type="Script" path="res://scenes/cpu/chip_8.gd" id="4_x8ixd"]
-[ext_resource type="AudioStream" uid="uid://bmjo582yh63jw" path="res://assets/sound/beep.ogg" id="5_03kvt"]
 [ext_resource type="Script" path="res://scenes/cpu/clock.gd" id="6_mfduj"]
+[ext_resource type="Script" path="res://scenes/cpu/chip_interrupts.gd" id="7_2u0jr"]
 [ext_resource type="Script" path="res://scenes/cpu/control_unit.gd" id="7_l2uid"]
+[ext_resource type="AudioStream" uid="uid://lgwt3604xiv" path="res://assets/sound/buzz.ogg" id="8_4ew0b"]
 [ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="8_arboy"]
 [ext_resource type="Script" path="res://scenes/cpu/instruction_set.gd" id="8_p4xvt"]
+[ext_resource type="Script" path="res://scenes/cpu/beeper.gd" id="9_bxxct"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_wpv0w"]
 
 [node name="CHIP-8" type="Node" node_paths=PackedStringArray("clock", "display")]
 script = ExtResource("4_x8ixd")
-rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
+rom = "res://roms/tests/6-keypad.ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 display = NodePath("Display")
 
-[node name="Clock" type="Node" parent="."]
+[node name="Clock" type="Node" parent="." node_paths=PackedStringArray("interrupt_controller")]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
 script = ExtResource("6_mfduj")
-clockspeed = 2000.0
+clockspeed = 700.0
+run_in_physics = true
+interrupt_controller = NodePath("../InterruptController")
 
 [node name="Keypad" type="Node" parent="."]
 script = ExtResource("4_82j2o")
 
-[node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad")]
+[node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad", "interrupts")]
 script = ExtResource("7_l2uid")
 instruction_set = ExtResource("8_p4xvt")
 display = NodePath("../Display")
 clock = NodePath("../Clock")
 keypad = NodePath("../Keypad")
+interrupts = NodePath("../InterruptController")
 ram = ExtResource("8_arboy")
 
-[node name="Beeper" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_03kvt")
-volume_db = -80.0
+[node name="InterruptController" type="Node" parent="."]
+script = ExtResource("7_2u0jr")
+
+[node name="Beeper" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("control_unit")]
+stream = ExtResource("8_4ew0b")
+volume_db = -20.329
+script = ExtResource("9_bxxct")
+control_unit = NodePath("../ControlUnit")
 
 [node name="Display" type="TextureRect" parent="."]
 texture_filter = 1
@@ -49,3 +62,6 @@ texture = SubResource("ImageTexture_wpv0w")
 script = ExtResource("3_8hwfk")
 width = 64
 height = 32
+
+[connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]
+[connection signal="refreshed" from="Display" to="InterruptController" method="_on_display_refreshed"]

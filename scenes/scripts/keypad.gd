@@ -72,6 +72,9 @@ func is_key_pressed(key: int) -> bool:
 			return Input.is_action_pressed("keypad_E")
 		0xF:
 			return Input.is_action_pressed("keypad_F")
+		_:
+			push_error("Invalid key request")
+			pass
 	return false
 
 func is_any_key_pressed() -> bool:
@@ -91,8 +94,3 @@ func is_any_key_pressed() -> bool:
 			or Input.is_action_pressed("keypad_D") \
 			or Input.is_action_pressed("keypad_E") \
 			or Input.is_action_pressed("keypad_F")
-
-func wait_until_press() -> void:
-	while not is_any_key_pressed(): pass
-	while is_any_key_pressed(): pass
-	return

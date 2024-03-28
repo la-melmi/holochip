@@ -47,8 +47,3 @@ func refresh() -> void:
 	texture.update(framebuffer.convert_to_image())
 	mutex.unlock()
 	refreshed.emit()
-
-
-func wait_for_vblank() -> void:
-	while mutex.try_lock():
-		mutex.unlock()

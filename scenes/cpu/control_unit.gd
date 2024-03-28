@@ -7,12 +7,14 @@ extends Node
 @export var display: CHIPDisplay
 @export var clock: Clock
 @export var keypad: CHIPKeypad
+@export var interrupts: InterruptController
 
 @export var ram: RAM
 
 @onready var _isa = instruction_set.new()
 
 var stack: Array[int]
+var mutex := Mutex.new()
 
 #region Register definitions
 var V := PackedByteArray()
@@ -43,8 +45,10 @@ func _ready() -> void:
 
 
 func timer_tick() -> void:
+	mutex.lock()
 	DT = max(DT - 1, 0)
 	ST = max(ST - 1, 0)
+	mutex.unlock()
 
 func step() -> void:
 	var opcode: int = fetch()
@@ -70,6 +74,9 @@ func decode(opcode) -> Array:
 func execute(instruction) -> void:
 	var opcode: StringName = instruction[0]
 	var args = instruction[1]
+	
+	if interrupts.poll_interrupt(interrupts.INTERRUPT_DEBUG):
+		pass
 	
 	match opcode:
 		
@@ -167,7 +174,9 @@ func execute(instruction) -> void:
 			V[args.X] = randi() & args.NN
 		
 		&"DXYN": # Draw
-			display.wait_for_vblank()
+			if legacy and not interrupts.poll_interrupt(interrupts.INTERRUPT_VBLANK):
+				PC -= 2
+				return
 			
 			V[0xF] = 0
 			
@@ -196,7 +205,11 @@ func execute(instruction) -> void:
 				PC += 2
 		
 		&"FX0A":
-			keypad.wait_until_press()
+			if not interrupts.poll_interrupt(interrupts.INTERRUPT_KEY):
+				PC -= 2
+				return
+			else:
+				V[args.X] = interrupts.poll_interrupt(interrupts.INTERRUPT_KEY)
 		
 		&"FX07": # Set Vx to value of delay timer
 			V[args.X] = DT

@@ -2,26 +2,26 @@
 
 [sub_resource type="BoxMesh" id="BoxMesh_iskyf"]
 
-[sub_resource type="Gradient" id="Gradient_cas1x"]
+[sub_resource type="Gradient" id="Gradient_gtyoj"]
 offsets = PackedFloat32Array(0, 0.150538, 0.333333, 0.620968, 0.787634, 0.991935)
 colors = PackedColorArray(0.0470588, 0.105882, 0.109804, 1, 0.207843, 0.290196, 0.368627, 1, 0.30575, 0.377925, 0.446662, 1, 0.431373, 0.615686, 0.815686, 1, 0.414339, 0.583447, 0.765649, 1, 0.811765, 0.909804, 0.905882, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_p42n3"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lrpqw"]
 noise_type = 2
 frequency = 0.0164
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b27iu"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_egtmw"]
 normalize = false
-color_ramp = SubResource("Gradient_cas1x")
-noise = SubResource("FastNoiseLite_p42n3")
+color_ramp = SubResource("Gradient_gtyoj")
+noise = SubResource("FastNoiseLite_lrpqw")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_akl8f"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35w2o"]
 transparency = 1
-albedo_color = Color(3.55, 5.917, 100, 0.761)
-albedo_texture = SubResource("NoiseTexture2D_b27iu")
+albedo_color = Color(3.55, 5.917, 100, 0.0247735)
+albedo_texture = SubResource("NoiseTexture2D_egtmw")
 emission_enabled = true
 
 [node name="HoloVoxel" type="MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
 mesh = SubResource("BoxMesh_iskyf")
-surface_material_override/0 = SubResource("StandardMaterial3D_akl8f")
+surface_material_override/0 = SubResource("StandardMaterial3D_35w2o")
