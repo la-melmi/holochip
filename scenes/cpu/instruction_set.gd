@@ -502,10 +502,10 @@ class Opcode:
 		name = instruction.name
 		exec = instruction.exec.bindv( map_args(opcode, instruction.arguments) )
 	
-	func map_args(opcode: int, args: Array) -> Array[int]:
+	func map_args(_opcode: int, args: Array) -> Array[int]:
 		var result: Array[int] = []
 		
 		for arg in args:
-			result.append( (opcode & arg.mask) >> arg.shift )
+			result.append( (_opcode & arg.mask) >> arg.shift )
 			
 		return result
