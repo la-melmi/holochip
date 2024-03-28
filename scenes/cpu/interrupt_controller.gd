@@ -27,3 +27,9 @@ func poll_all_interrupts() -> Array[Variant]:
 	var state := _interrupts.duplicate()
 	mutex.unlock()
 	return state
+
+
+func block_until(index: int, allow_current: bool = false) -> Variant:
+	while _interrupts[index] and allow_current: pass
+	while not _interrupts[index]: pass
+	return _interrupts[index]
