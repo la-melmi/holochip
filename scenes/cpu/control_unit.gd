@@ -6,6 +6,9 @@ extends Node
 @export var legacy: bool = true
 @export var instruction_set: Script
 
+@export_group("Quirks")
+@export var display_wait: bool = true
+
 @export_group("Connected Nodes")
 @export var display: CHIPDisplay
 @export var clock: Clock

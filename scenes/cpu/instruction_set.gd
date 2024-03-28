@@ -361,7 +361,7 @@ var INSTRUCTION_SET = [
 		0xD000,
 		[ X, Y, N ],
 		func DRW_VX_VY_N(cpu: CHIPDecoder, x: int, y: int, n: int):
-			if cpu.legacy and not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_VBLANK):
+			if cpu.display_wait and not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_VBLANK):
 				cpu.PC -= 2
 				return
 			
