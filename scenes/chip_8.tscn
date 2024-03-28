@@ -15,7 +15,7 @@
 
 [node name="CHIP-8" type="Node" node_paths=PackedStringArray("clock", "display")]
 script = ExtResource("4_x8ixd")
-rom = "res://roms/tests/8-scrolling.ch8"
+rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 display = NodePath("Display")
@@ -25,8 +25,6 @@ process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 script = ExtResource("6_mfduj")
-clockspeed = 700.0
-run_in_physics = true
 interrupt_controller = NodePath("../InterruptController")
 
 [node name="Keypad" type="Node" parent="."]
