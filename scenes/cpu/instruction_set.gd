@@ -504,7 +504,9 @@ var INSTRUCTION_SET = [
 		[ X ],
 		func LD_B_VX(cpu: CHIPDecoder, x: int):
 			var num := cpu.V[x]
+			@warning_ignore("integer_division")
 			cpu.ram.write(cpu.I, num / 100)
+			@warning_ignore("integer_division")
 			cpu.ram.write(cpu.I + 1, (num / 10) % 10)
 			cpu.ram.write(cpu.I + 2, num % 10)
 			),
