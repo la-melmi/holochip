@@ -4,11 +4,14 @@ extends Node
 
 @export var legacy: bool = true
 @export var instruction_set: Script
+
+@export_group("Connected Nodes")
 @export var display: CHIPDisplay
 @export var clock: Clock
 @export var keypad: CHIPKeypad
 @export var interrupts: InterruptController
 
+@export_group("Resources")
 @export var ram: RAM
 
 @onready var _isa = instruction_set.new()
