@@ -378,7 +378,7 @@ var INSTRUCTION_SET = [
 					var sprite: int = cpu.ram.read_16(row*2 + cpu.I)
 					
 					for col in 16:
-						if (sprite & 0x80) > 0:
+						if (sprite & 0x8000) > 0:
 							if cpu.display.set_pixel(
 									(_x + col) % cpu.display.width,
 									(_y + row) % cpu.display.height):
