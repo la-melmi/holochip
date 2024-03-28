@@ -11,7 +11,7 @@ var mutex := Mutex.new()
 @export var height: int
 
 func _ready() -> void:
-	resize(64, 32)
+	resize(width, height)
 
 func _physics_process(_delta):
 	refresh()
