@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://8fi20pxoff6i"]
+[gd_scene load_steps=13 format=3 uid="uid://8fi20pxoff6i"]
 
 [ext_resource type="Script" path="res://scenes/scripts/display.gd" id="3_8hwfk"]
 [ext_resource type="Script" path="res://scenes/scripts/keypad.gd" id="4_82j2o"]
@@ -10,12 +10,13 @@
 [ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="8_arboy"]
 [ext_resource type="Script" path="res://scenes/cpu/instruction_set.gd" id="8_p4xvt"]
 [ext_resource type="Script" path="res://scenes/cpu/beeper.gd" id="9_bxxct"]
+[ext_resource type="Script" path="res://scenes/cpu/quirks.gd" id="11_6gosw"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_wpv0w"]
 
 [node name="CHIP-8" type="Node" node_paths=PackedStringArray("clock", "display")]
 script = ExtResource("4_x8ixd")
-rom = "res://roms/revival-studios/games/Pong (1 player).ch8"
+rom = "res://roms/tests/5-quirks.ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 display = NodePath("Display")
@@ -25,18 +26,20 @@ process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 script = ExtResource("6_mfduj")
+clockspeed = 3000.0
 interrupt_controller = NodePath("../InterruptController")
 
 [node name="Keypad" type="Node" parent="."]
 script = ExtResource("4_82j2o")
 
-[node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad", "interrupts")]
+[node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad", "interrupts", "quirks")]
 script = ExtResource("7_l2uid")
 instruction_set = ExtResource("8_p4xvt")
 display = NodePath("../Display")
 clock = NodePath("../Clock")
 keypad = NodePath("../Keypad")
 interrupts = NodePath("../InterruptController")
+quirks = NodePath("../Quirks")
 ram = ExtResource("8_arboy")
 
 [node name="InterruptController" type="Node" parent="."]
@@ -60,6 +63,11 @@ texture = SubResource("ImageTexture_wpv0w")
 script = ExtResource("3_8hwfk")
 width = 64
 height = 32
+
+[node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
+script = ExtResource("11_6gosw")
+system = 1
+display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]
 [connection signal="refreshed" from="Display" to="InterruptController" method="_on_display_refreshed"]

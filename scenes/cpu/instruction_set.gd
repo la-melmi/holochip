@@ -224,7 +224,7 @@ var INSTRUCTION_SET = [
 		[ X, Y ],
 		func OR_VX_VY(cpu: CHIPDecoder, x: int, y: int):
 			cpu.V[x] |= cpu.V[y]
-			cpu.V[0xF] = 0
+			if cpu.quirks.vf_reset: cpu.V[0xF] = 0
 			),
 	
 	Instruction.new(
@@ -235,7 +235,7 @@ var INSTRUCTION_SET = [
 		[ X, Y ],
 		func AND_VX_VY(cpu: CHIPDecoder, x: int, y: int):
 			cpu.V[x] &= cpu.V[y]
-			cpu.V[0xF] = 0
+			if cpu.quirks.vf_reset: cpu.V[0xF] = 0
 			),
 	
 	Instruction.new(
@@ -246,7 +246,7 @@ var INSTRUCTION_SET = [
 		[ X, Y ],
 		func XOR_VX_VY(cpu: CHIPDecoder, x: int, y: int):
 			cpu.V[x] ^= cpu.V[y]
-			cpu.V[0xF] = 0
+			if cpu.quirks.vf_reset: cpu.V[0xF] = 0
 			),
 	
 	Instruction.new(
@@ -283,7 +283,7 @@ var INSTRUCTION_SET = [
 		0x8006,
 		[ X, Y ],
 		func SHR_VX_VY(cpu: CHIPDecoder, x: int, y: int):
-			cpu.V[x] = cpu.V[y]
+			if not cpu.quirks.shifting: cpu.V[x] = cpu.V[y]
 			var carry: int = cpu.V[x] & 1
 			cpu.V[x] >>= 1
 			cpu.V[0xF] = carry
@@ -308,7 +308,7 @@ var INSTRUCTION_SET = [
 		0x800E,
 		[ X, Y ],
 		func SHL_VX_VY(cpu: CHIPDecoder, x: int, y: int):
-			cpu.V[x] = cpu.V[y]
+			if not cpu.quirks.shifting: cpu.V[x] = cpu.V[y]
 			var carry := (cpu.V[x] & 0x80) >> 7
 			cpu.V[x] <<= 1
 			cpu.V[0xF] = carry
@@ -342,9 +342,9 @@ var INSTRUCTION_SET = [
 		&"BNNN",
 		0xf000,
 		0xB000,
-		[ NNN ],
-		func JP_V0_ADDR(cpu: CHIPDecoder, nnn: int):
-			cpu.PC = nnn + cpu.V[0]
+		[ X, NNN ],
+		func JP_V0_ADDR(cpu: CHIPDecoder, x: int, nnn: int):
+			cpu.PC = nnn + cpu.V[x if cpu.quirks.jumping else 0]
 			),
 	
 	Instruction.new(
@@ -364,7 +364,7 @@ var INSTRUCTION_SET = [
 		0xD000,
 		[ X, Y, N ],
 		func DRW_VX_VY_N(cpu: CHIPDecoder, x: int, y: int, n: int):
-			if cpu.display_wait and not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_VBLANK):
+			if cpu.quirks.display_wait and not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_VBLANK):
 				cpu.PC -= 2
 				return
 			
@@ -379,13 +379,15 @@ var INSTRUCTION_SET = [
 					
 					for col in 16:
 						if (sprite & 0x80) > 0:
-							if cpu.display.set_pixel(_x + col, _y + row):
+							if cpu.display.set_pixel(
+									(_x + col) % cpu.display.width,
+									(_y + row) % cpu.display.height):
 								cpu.V[0xF] = 1
 						
-						if (_x + col + 1) >= cpu.display.width: break
+						if cpu.quirks.clipping and (_x + col + 1) >= cpu.display.width: break
 						sprite <<= 1
 					
-					if (_y + row + 1) >= cpu.display.height: break
+					if cpu.quirks.clipping and (_y + row + 1) >= cpu.display.height: break
 				return
 			
 			for row in n:
@@ -393,13 +395,15 @@ var INSTRUCTION_SET = [
 				
 				for col in 8:
 					if (sprite & 0x80) > 0:
-						if cpu.display.set_pixel(_x + col, _y + row):
+						if cpu.display.set_pixel(
+								(_x + col) % cpu.display.width,
+								(_y + row) % cpu.display.height):
 							cpu.V[0xF] = 1
 					
-					if (_x + col + 1) >= cpu.display.width: break
+					if cpu.quirks.clipping and (_x + col + 1) >= cpu.display.width: break
 					sprite <<= 1
 				
-				if (_y + row + 1) >= cpu.display.height: break
+				if cpu.quirks.clipping and (_y + row + 1) >= cpu.display.height: break
 			),
 	
 	Instruction.new(
@@ -513,7 +517,7 @@ var INSTRUCTION_SET = [
 		[ X ],
 		func LD_I_VX(cpu: CHIPDecoder, x: int):
 			for i in x + 1:
-				if cpu.legacy:
+				if cpu.quirks.memory:
 					cpu.ram.write(cpu.I, cpu.V[i])
 					cpu.I += 1
 				else:
@@ -528,7 +532,7 @@ var INSTRUCTION_SET = [
 		[ X ],
 		func LD_VX_I(cpu: CHIPDecoder, x: int):
 			for i in x + 1:
-				if cpu.legacy:
+				if cpu.quirks.memory:
 					cpu.V[i] = cpu.ram.read(cpu.I)
 					cpu.I += 1
 				else:
