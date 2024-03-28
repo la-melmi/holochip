@@ -267,8 +267,9 @@ var INSTRUCTION_SET = [
 		0xD000,
 		[ X, Y, N ],
 		func DRW_VX_VY_N(cpu: CHIPDecoder, x: int, y: int, n: int):
-			if cpu.legacy:
-				cpu.interrupts.wait_for(cpu.interrupts.INTERRUPT_VBLANK)
+			if cpu.legacy and not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_VBLANK):
+				cpu.PC -= 2
+				return
 			
 			cpu.V[0xF] = 0
 			
@@ -330,7 +331,11 @@ var INSTRUCTION_SET = [
 		0xf00a,
 		[ X ],
 		func LD_VX_K(cpu: CHIPDecoder, x: int):
-			cpu.V[x] = cpu.interrupts.wait_for(cpu.interrupts.INTERRUPT_KEY)
+			if not cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_KEY):
+				cpu.PC -= 2
+				return
+			else:
+				cpu.V[x] = cpu.interrupts.poll_interrupt(cpu.interrupts.INTERRUPT_KEY)
 			),
 	
 	Instruction.new(

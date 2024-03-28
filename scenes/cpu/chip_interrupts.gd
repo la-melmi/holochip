@@ -12,7 +12,7 @@ func _input(event):
 		interrupt(INTERRUPT_DEBUG)
 
 func _ready() -> void:
-	create_interrupts(3)
+	_interrupts.resize(3)
 
 func _on_display_refreshed() -> void:
 	interrupt(INTERRUPT_VBLANK)

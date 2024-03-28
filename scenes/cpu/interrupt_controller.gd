@@ -3,39 +3,27 @@ extends Node
 
 var mutex := Mutex.new()
 
-var _interrupts: Array[Interrupt]
+var _interrupts: Array[Variant]
 
 func interrupt(index: int, msg: Variant = true) -> void:
 	mutex.lock()
-	_interrupts[index].send(msg)
+	_interrupts[index] = msg
 	mutex.unlock()
 
 func acknowledge() -> void:
 	mutex.lock()
 	for i in _interrupts.size():
-		_interrupts[i].clear()
+		_interrupts[i] = false
 	mutex.unlock()
 
 func poll_interrupt(index: int) -> Variant:
 	mutex.lock()
-	var state = _interrupts[index].poll()
+	var state = _interrupts[index]
 	mutex.unlock()
 	return state
 
 func poll_all_interrupts() -> Array[Variant]:
-	var states = []
 	mutex.lock()
-	for flag in _interrupts:
-		states.append(flag.poll())
+	var state := _interrupts.duplicate()
 	mutex.unlock()
-	return states
-
-func wait_for(index: int) -> Variant:
-	return _interrupts[index].wait()
-
-
-func create_interrupts(num: int) -> void:
-	_interrupts = []
-	
-	for i in num:
-		_interrupts.append( Interrupt.new() )
+	return state
