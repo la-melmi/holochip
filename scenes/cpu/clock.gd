@@ -70,9 +70,9 @@ func loop() -> void:
 		if time_diff >= _tick_interval:
 			if time_diff != _tick_interval:
 				var time_loss := time_diff - _tick_interval
-				if time_loss > 1000:
+				if time_loss > 1000 and clockspeed != 0:
 					push_warning("Time loss of %d usec!" % time_loss)
-				elif time_loss < -1000:
+				elif time_loss < -1000 and clockspeed != 0:
 					push_warning("Time gain of %d usec!" % -time_loss)
 			last_tick = time
 			
