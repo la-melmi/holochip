@@ -79,4 +79,6 @@ func execute(_instruction: Object) -> void:
 	if interrupts.poll_interrupt(interrupts.INTERRUPT_DEBUG):
 		pass
 	
+	print("Executing %s() (%X)" %[_instruction.id, _instruction.opcode])
 	_instruction.exec.call(self)
+	return
