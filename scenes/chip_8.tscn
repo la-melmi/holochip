@@ -70,4 +70,5 @@ system = 1
 display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]
+[connection signal="buffer_resized" from="Display" to="InterruptController" method="_on_display_buffer_resized"]
 [connection signal="refreshed" from="Display" to="InterruptController" method="_on_display_refreshed"]
