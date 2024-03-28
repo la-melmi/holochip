@@ -100,7 +100,7 @@ var INSTRUCTION_SET = [
 		[],
 		func LORES(cpu: CHIPDecoder):
 			cpu.display.resize.call_deferred(64, 32)
-			cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_VBLANK)
+			cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_RESIZE)
 			),
 	
 	Instruction.new(
@@ -111,7 +111,7 @@ var INSTRUCTION_SET = [
 		[],
 		func HIRES(cpu: CHIPDecoder):
 			cpu.display.resize.call_deferred(128, 64)
-			cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_VBLANK)
+			cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_RESIZE)
 			),
 	
 	Instruction.new(
@@ -134,7 +134,7 @@ var INSTRUCTION_SET = [
 			if cpu.PC == 0x202 and nnn == 0x260:
 				# Init legacy 64x64 hires mode
 				cpu.display.resize.call_deferred(64, 64)
-				cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_VBLANK)
+				cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_RESIZE)
 				cpu.PC = 0x2C0
 			else:
 				cpu.PC = nnn

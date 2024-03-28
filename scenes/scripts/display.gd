@@ -2,6 +2,7 @@ class_name CHIPDisplay
 extends TextureRect
 
 signal refreshed
+signal buffer_resized
 
 @onready var framebuffer := BitMap.new()
 var mutex := Mutex.new()
@@ -61,6 +62,8 @@ func resize(w: int, h: int) -> void:
 	framebuffer.resize( Vector2i(width, height) )
 	texture = ImageTexture.create_from_image(framebuffer.convert_to_image())
 	mutex.unlock()
+	
+	buffer_resized.emit()
 
 func resizev(dimensions: Vector2i) -> void:
 	resize(dimensions.x, dimensions.y)
