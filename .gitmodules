@@ -1,3 +1,6 @@
 [submodule "roms/chip8-roms"]
 	path = roms/chip8-roms
 	url = git@github.com:kripod/chip8-roms.git
+[submodule "roms/revival-studios"]
+	path = roms/revival-studios
+	url = git@github.com:kripod/chip8-roms.git
