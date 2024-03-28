@@ -2,9 +2,11 @@ class_name CHIP8
 extends Node
 
 
+@export_group("Imports")
 @export_file("*.ch8", "*.bin") var rom: String
 @export_file("*.bin") var font: String
 
+@export_group("Connected Nodes")
 @export var ram: RAM
 @export var clock: Clock
 @export var display: CHIPDisplay
