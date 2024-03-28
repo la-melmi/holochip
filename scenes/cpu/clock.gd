@@ -13,6 +13,8 @@ extends Node
 
 @export var paused: bool = false
 
+@export var log_time_loss: bool
+
 @export var interrupt_controller: InterruptController
 
 var _cycles_per_frame: int
@@ -68,7 +70,7 @@ func loop() -> void:
 		
 		var time_diff := time - last_tick
 		if time_diff >= _tick_interval:
-			if time_diff != _tick_interval:
+			if log_time_loss and time_diff != _tick_interval:
 				var time_loss := time_diff - _tick_interval
 				if time_loss > 1000 and clockspeed != 0:
 					push_warning("Time loss of %d usec!" % time_loss)
