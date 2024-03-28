@@ -2,6 +2,7 @@ class_name CHIPDecoder
 extends Node
 
 
+@export var debug: bool
 @export var legacy: bool = true
 @export var instruction_set: Script
 
@@ -79,6 +80,24 @@ func execute(_instruction: Object) -> void:
 	if interrupts.poll_interrupt(interrupts.INTERRUPT_DEBUG):
 		pass
 	
-	print("Executing %s() (%X)" %[_instruction.id, _instruction.opcode])
+	if debug: debug_print(_instruction)
+	
 	_instruction.exec.call(self)
 	return
+
+
+func debug_print(_instruction: Object) -> void:
+	var string: String = "Executing %s(" % _instruction.id
+	
+	var parts: PackedStringArray = []
+	for i in _instruction.args.size():
+		parts.append("%s = %d" % [
+			_instruction.base.arguments[i].type.to_lower(),
+			_instruction.args[i],
+			])
+	
+	string += ", ".join(parts)
+	
+	string += ") (%X)" % _instruction.opcode
+	
+	print(string)

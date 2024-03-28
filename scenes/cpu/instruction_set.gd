@@ -495,12 +495,16 @@ class Opcode:
 	var id: StringName
 	var name: StringName
 	var exec: Callable
+	var args: Array
+	var base: Instruction
 	
 	func _init(_opcode: int, instruction: Instruction):
 		opcode = _opcode
 		id = instruction.id
 		name = instruction.name
-		exec = instruction.exec.bindv( map_args(opcode, instruction.arguments) )
+		base = instruction
+		args = map_args(opcode, instruction.arguments)
+		exec = instruction.exec.bindv( args )
 	
 	func map_args(_opcode: int, args: Array) -> Array[int]:
 		var result: Array[int] = []
