@@ -50,12 +50,16 @@ func timer_tick() -> void:
 	ST = max(ST - 1, 0)
 	mutex.unlock()
 
+
+var instruction: Object
+
 func step() -> void:
 	var opcode: int = fetch()
 	PC += 2
-	var instruction: Object = decode(opcode)
 	
-	#print(instruction[0])
+	if (not instruction) or (opcode != instruction.opcode):
+		instruction = decode(opcode)
+	
 	execute(instruction)
 
 func fetch() -> int:
@@ -64,8 +68,8 @@ func fetch() -> int:
 func decode(opcode: int) -> Object:
 	return _isa.disassemble(opcode)
 
-func execute(instruction: Object) -> void:
+func execute(_instruction: Object) -> void:
 	if interrupts.poll_interrupt(interrupts.INTERRUPT_DEBUG):
 		pass
 	
-	instruction.exec.call(self)
+	_instruction.exec.call(self)

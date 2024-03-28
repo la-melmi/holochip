@@ -491,13 +491,13 @@ class ArgumentType:
 		type = _type
 
 class Opcode:
-	var raw: int
+	var opcode: int
 	var id: StringName
 	var name: StringName
 	var exec: Callable
 	
-	func _init(opcode: int, instruction: Instruction):
-		raw = opcode
+	func _init(_opcode: int, instruction: Instruction):
+		opcode = _opcode
 		id = instruction.id
 		name = instruction.name
 		exec = instruction.exec.bindv( map_args(opcode, instruction.arguments) )
