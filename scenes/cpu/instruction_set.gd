@@ -12,16 +12,44 @@ var INSTRUCTION_SET = [
 	
 	#region Simple instructions
 	Instruction.new(
+		&"HALT", # Halt execution, but don't exit.
+		&"0000",
+		0xffff,
+		0x0000,
+		[],
+		func HALT(cpu: CHIPDecoder):
+			cpu.clock.stop.call_deferred()
+			),
+	
+	Instruction.new(
+		&"SCROLL_DOWN_N", # Scroll down by 0-15 pixels
+		&"00CN",
+		0xfff0,
+		0x00C0,
+		[ N ],
+		func SCROLL_DOWN_N(cpu: CHIPDecoder, n: int):
+			cpu.display.scroll(0, n)
+			),
+	
+	Instruction.new(
+		&"SCROLL_UP_N", # Scroll down by 0-15 pixels
+		&"00DN",
+		0xfff0,
+		0x00D0,
+		[ N ],
+		func SCROLL_UP_N(cpu: CHIPDecoder, n: int):
+			cpu.display.scroll(0, -n)
+			),
+	
+	Instruction.new(
 		&"CLS", # Clear
 		&"00E0",
 		0xffff,
 		0x00E0,
 		[],
 		func CLS(cpu: CHIPDecoder):
-			for x in cpu.display.width:
-				for y in cpu.display.height:
-					cpu.display.clear_pixel(x, y)
-					),
+			cpu.display.clear()
+			),
 	
 	Instruction.new(
 		&"RET", # Return
@@ -34,13 +62,79 @@ var INSTRUCTION_SET = [
 			),
 	
 	Instruction.new(
+		&"SCROLL_RIGHT", # Scroll right by 4 pixels
+		&"00FB",
+		0xffff,
+		0x00FB,
+		[],
+		func SCROLL_RIGHT(cpu: CHIPDecoder):
+			cpu.display.scroll(4, 0)
+			),
+	
+	Instruction.new(
+		&"SCROLL_LEFT", # Scroll left by 4 pixels
+		&"00FC",
+		0xffff,
+		0x00FC,
+		[],
+		func SCROLL_LEFT(cpu: CHIPDecoder):
+			cpu.display.scroll(-4, 0)
+			),
+	
+	Instruction.new(
+		&"EXIT", # Immediately exit
+		&"00FD",
+		0xffff,
+		0x00FD,
+		[],
+		func EXIT(cpu: CHIPDecoder):
+			cpu.clock.stop.call_deferred()
+			cpu.exit.call_deferred()
+			),
+	
+	Instruction.new(
+		&"LORES", # Disable hires mode and return to lores 64x32
+		&"00FE",
+		0xffff,
+		0x00FE,
+		[],
+		func LORES(cpu: CHIPDecoder):
+			cpu.display.resize.call_deferred(64, 32)
+			),
+	
+	Instruction.new(
+		&"HIRES", # Enable hires mode
+		&"00FF",
+		0xffff,
+		0x00FF,
+		[],
+		func HIRES(cpu: CHIPDecoder):
+			cpu.display.resize.call_deferred(128, 64)
+			),
+	
+	Instruction.new(
+		&"CLS_64", # Legacy 64x64 clearscreen
+		&"0230",
+		0xffff,
+		0x0230,
+		[],
+		func CLS_64(cpu: CHIPDecoder):
+			cpu.display.clear()
+			),
+	
+	Instruction.new(
 		&"JP_ADDR", # Jump
 		&"1NNN",
 		0xf000,
 		0x1000,
 		[ NNN ],
 		func JP_ADDR(cpu: CHIPDecoder, nnn: int):
-			cpu.PC = nnn
+			if cpu.PC == 0x202 and nnn == 0x260:
+				# Init legacy 64x64 hires mode
+				cpu.display.resize.call_deferred(64, 64)
+				cpu.PC = 0x2C0
+			else:
+				cpu.PC = nnn
 			),
 	
 	Instruction.new(
@@ -276,6 +370,21 @@ var INSTRUCTION_SET = [
 			var _x: int = cpu.V[x] % cpu.display.width
 			var _y: int = cpu.V[y] % cpu.display.height
 			
+			if n == 0: # Draw 16x16 SCHIP sprite
+				for row in 16:
+					var sprite: int = cpu.ram.read_16(row*2 + cpu.I)
+					
+					for col in 16:
+						if (sprite & 0x80) > 0:
+							if cpu.display.set_pixel(_x + col, _y + row):
+								cpu.V[0xF] = 1
+						
+						if (_x + col + 1) >= cpu.display.width: break
+						sprite <<= 1
+					
+					if (_y + row + 1) >= cpu.display.height: break
+				return
+			
 			for row in n:
 				var sprite: int = cpu.ram.read(row + cpu.I)
 				
@@ -421,6 +530,28 @@ var INSTRUCTION_SET = [
 					cpu.I += 1
 				else:
 					cpu.V[i] = cpu.ram.read(cpu.I + i)
+			),
+	
+	Instruction.new(
+		&"SAVEFLAGS_VX", # Save V0-Vx to flag registers
+		&"FX75",
+		0xf0ff,
+		0xf075,
+		[ X ],
+		func SAVEFLAGS_VX(cpu: CHIPDecoder, x: int):
+			for i in x + 1:
+				cpu.write_flag(i, cpu.V[i])
+			),
+	
+	Instruction.new(
+		&"LOADFLAGS_VX", # Restore V0-Vx from flag registers
+		&"FX85",
+		0xf0ff,
+		0xf085,
+		[ X ],
+		func LOADFLAGS_VX(cpu: CHIPDecoder, x: int):
+			for i in x + 1:
+				cpu.V[i] = cpu.read_flag(i)
 			),
 	#endregion
 ]

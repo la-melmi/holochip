@@ -10,8 +10,7 @@ var mutex := Mutex.new()
 @export var height: int
 
 func _ready() -> void:
-	framebuffer.resize( Vector2i(width, height) )
-	texture = ImageTexture.create_from_image(framebuffer.convert_to_image())
+	resize(64, 32)
 
 func _physics_process(_delta):
 	refresh()
@@ -47,3 +46,38 @@ func refresh() -> void:
 	texture.update(framebuffer.convert_to_image())
 	mutex.unlock()
 	refreshed.emit()
+
+func resize(w: int, h: int) -> void:
+	mutex.lock()
+	width = w
+	height = h
+	framebuffer.resize( Vector2i(width, height) )
+	texture = ImageTexture.create_from_image(framebuffer.convert_to_image())
+	mutex.unlock()
+
+func resizev(dimensions: Vector2i) -> void:
+	resize(dimensions.x, dimensions.y)
+
+func clear() -> void:
+	mutex.lock()
+	framebuffer = BitMap.new()
+	framebuffer.resize( Vector2i(width, height) )
+	mutex.unlock()
+
+func scroll(x_scroll: int, y_scroll: int) -> void:
+	mutex.lock()
+	
+	var original := framebuffer.duplicate()
+	clear()
+	
+	for x in width:
+		for y in height:
+			var new_x := x + x_scroll
+			var new_y := y + y_scroll
+			
+			if new_x >= width or new_x < 0 or new_y >= height or new_y < 0:
+				continue
+			
+			framebuffer.set_bit(new_x, new_y, original.get_bit(x, y))
+	
+	mutex.unlock()

@@ -101,3 +101,30 @@ func debug_print(_instruction: Object) -> void:
 	string += ") (%X)" % _instruction.opcode
 	
 	print(string)
+
+
+var flag_register_path := "user://flag_registers.tres"
+
+func get_flag_registers() -> FlagRegisters:
+	if ResourceLoader.exists(flag_register_path):
+		return load(flag_register_path)
+	return FlagRegisters.new()
+
+func read_flag(index: int) -> int:
+	mutex.lock()
+	var flags := get_flag_registers()
+	var value := flags.registers[index]
+	mutex.unlock()
+	return value
+
+func write_flag(index: int, value: int) -> void:
+	mutex.lock()
+	var flags := get_flag_registers()
+	flags.registers[index] = value
+	ResourceSaver.save(flags, flag_register_path)
+	mutex.unlock()
+
+
+# Cannot be called in thread
+func exit() -> void:
+	get_tree().quit()
