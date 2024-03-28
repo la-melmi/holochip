@@ -51,14 +51,18 @@ func timer_tick() -> void:
 	mutex.unlock()
 
 
-var instruction: Object
+var instruction_cache: Dictionary
 
 func step() -> void:
 	var opcode: int = fetch()
 	PC += 2
 	
-	if (not instruction) or (opcode != instruction.opcode):
+	var instruction: Object
+	if opcode in instruction_cache:
+		instruction = instruction_cache[opcode]
+	else:
 		instruction = decode(opcode)
+		instruction_cache[opcode] = instruction
 	
 	execute(instruction)
 
