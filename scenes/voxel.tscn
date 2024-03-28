@@ -1,4 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dwrermwypugkc"]
+[gd_scene load_steps=7 format=3 uid="uid://dwrermwypugkc"]
+
+[ext_resource type="Script" path="res://scenes/scripts/holo_voxel.gd" id="1_kusdn"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_iskyf"]
 
@@ -17,7 +19,7 @@ noise = SubResource("FastNoiseLite_lrpqw")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35w2o"]
 transparency = 1
-albedo_color = Color(3.55, 5.917, 100, 0.0247735)
+albedo_color = Color(3.54902, 5.91765, 100, 0.733333)
 albedo_texture = SubResource("NoiseTexture2D_egtmw")
 emission_enabled = true
 
@@ -25,3 +27,4 @@ emission_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
 mesh = SubResource("BoxMesh_iskyf")
 surface_material_override/0 = SubResource("StandardMaterial3D_35w2o")
+script = ExtResource("1_kusdn")
