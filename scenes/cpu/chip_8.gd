@@ -33,9 +33,9 @@ var default_font := PackedByteArray([
 
 func _ready() -> void:
 	if font:
-		import_bin(0x50, font)
+		import_bin(0, font)
 	else:
-		var pointer := 0x50
+		var pointer := 0
 		for byte in default_font:
 			ram.write(pointer, byte)
 			pointer += 1

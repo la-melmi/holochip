@@ -493,7 +493,7 @@ var INSTRUCTION_SET = [
 		0xf029,
 		[ X ],
 		func LD_F_VX(cpu: CHIPDecoder, x: int):
-			cpu.I = 0x50 + (cpu.V[x] * 5)
+			cpu.I = (cpu.V[x] * 5)
 			),
 	
 	Instruction.new(
