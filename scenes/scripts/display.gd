@@ -54,8 +54,8 @@ func resize(w: int, h: int) -> void:
 	
 	var aspect := float(w) / float(h)
 	
-	if aspect != float(width) / float(height):
-		get_viewport().content_scale_size = Vector2i(960, 960) * aspect
+	#if aspect != float(width) / float(height):
+		#get_viewport().content_scale_size = Vector2i(960, 960) * aspect
 	
 	width = w
 	height = h
