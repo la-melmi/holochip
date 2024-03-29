@@ -24,7 +24,6 @@ display = NodePath("Display")
 [node name="Clock" type="Node" parent="." node_paths=PackedStringArray("interrupt_controller")]
 script = ExtResource("6_mfduj")
 clockspeed = 1200.0
-running_mode = 1
 log_time_loss = true
 interrupt_controller = NodePath("../InterruptController")
 

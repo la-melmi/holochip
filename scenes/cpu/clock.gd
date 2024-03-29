@@ -2,8 +2,8 @@ class_name Clock
 extends Node
 
 enum Mode {
-	THREAD,
 	IDLE,
+	THREAD,
 	PHYSICS,
 }
 
