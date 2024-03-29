@@ -25,6 +25,7 @@ var _timer_interval := int(1000000.0 / 60.0)
 var callbacks: Array[Callable]
 var timer_callbacks: Array[Callable]
 var running: bool
+var step: bool
 
 var thread: Thread
 
@@ -33,6 +34,12 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	stop()
+
+func _input(event) -> void:
+	if event.is_action_pressed("step"):
+		step = true
+	if event.is_action_pressed("pause"):
+		paused = not paused
 
 
 func stop() -> void:
@@ -58,7 +65,7 @@ func loop() -> void:
 	var last_timer_tick: int = 0
 	
 	while running:
-		if paused: continue
+		if paused and not step: continue
 		
 		var time := Time.get_ticks_usec()
 		if time == last: continue
@@ -84,6 +91,7 @@ func loop() -> void:
 			interrupt_controller.acknowledge()
 		
 		last = time
+		step = false
 
 
 func _physics_process(_delta) -> void:
