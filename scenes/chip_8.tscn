@@ -22,11 +22,10 @@ clock = NodePath("Clock")
 display = NodePath("Display")
 
 [node name="Clock" type="Node" parent="." node_paths=PackedStringArray("interrupt_controller")]
-process_thread_group = 2
-process_thread_group_order = 0
-process_thread_messages = 0
 script = ExtResource("6_mfduj")
-clockspeed = 3000.0
+clockspeed = 1200.0
+running_mode = 1
+log_time_loss = true
 interrupt_controller = NodePath("../InterruptController")
 
 [node name="Keypad" type="Node" parent="."]
@@ -34,6 +33,7 @@ script = ExtResource("4_82j2o")
 
 [node name="ControlUnit" type="Node" parent="." node_paths=PackedStringArray("display", "clock", "keypad", "interrupts", "quirks")]
 script = ExtResource("7_l2uid")
+legacy = false
 instruction_set = ExtResource("8_p4xvt")
 display = NodePath("../Display")
 clock = NodePath("../Clock")
@@ -42,8 +42,9 @@ interrupts = NodePath("../InterruptController")
 quirks = NodePath("../Quirks")
 ram = ExtResource("8_arboy")
 
-[node name="InterruptController" type="Node" parent="."]
+[node name="InterruptController" type="Node" parent="." node_paths=PackedStringArray("clock")]
 script = ExtResource("7_2u0jr")
+clock = NodePath("../Clock")
 
 [node name="Beeper" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("control_unit")]
 stream = ExtResource("8_4ew0b")
@@ -66,9 +67,10 @@ height = 32
 
 [node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
 script = ExtResource("11_6gosw")
-system = 1
+system = 3
 display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]
+[connection signal="buffer_resized" from="Display" to="Clock" method="_on_display_resized"]
 [connection signal="buffer_resized" from="Display" to="InterruptController" method="_on_display_buffer_resized"]
 [connection signal="refreshed" from="Display" to="InterruptController" method="_on_display_refreshed"]

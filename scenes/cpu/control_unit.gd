@@ -25,7 +25,9 @@ var mutex := Mutex.new()
 var V := PackedByteArray()
 
 var I: int:
-	set(value): I = value % 65536
+	set(value):
+		if value > 0x1000: push_warning("Index register overflow: %X (%d)" % [value, value])
+		I = value % 65536
 
 var PC: int = 0x200:
 	set(value): PC = value % 65536
@@ -69,7 +71,7 @@ func step() -> void:
 		instruction = decode(opcode)
 		instruction_cache[opcode] = instruction
 	
-	execute(instruction)
+	await execute(instruction)
 
 func fetch() -> int:
 	return ram.read_16(PC)
@@ -83,7 +85,7 @@ func execute(_instruction: Object) -> void:
 	
 	if debug: debug_print(_instruction)
 	
-	_instruction.exec.call(self)
+	await _instruction.exec.call(self)
 	return
 
 

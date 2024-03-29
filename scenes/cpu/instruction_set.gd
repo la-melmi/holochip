@@ -111,7 +111,7 @@ var INSTRUCTION_SET = [
 		[],
 		func HIRES(cpu: CHIPDecoder):
 			cpu.display.resize.call_deferred(128, 64)
-			cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_RESIZE)
+			await cpu.interrupts.block_until(cpu.interrupts.INTERRUPT_RESIZE)
 			),
 	
 	Instruction.new(

@@ -22,7 +22,6 @@ mesh_instance = NodePath("DisplayPlane")
 voxel_scene = ExtResource("4_llpts")
 
 [node name="CHIP-8" parent="." instance=ExtResource("1_7ypaw")]
-rom = "res://roms/revival-studios/games/Breakout (Brix hack) [David Winter, 1997].ch8"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.95281, 0.303567, 0, -0.303567, 0.95281, 0, 11.4671, 35.1218)
