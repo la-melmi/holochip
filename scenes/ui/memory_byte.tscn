@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dpepveik1d4v"]
+
+[ext_resource type="Script" path="res://scenes/ui/scripts/memory_byte.gd" id="1_0we0u"]
+[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="2_65ibe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eojl2"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 1.0
+content_margin_bottom = 0.0
+bg_color = Color(0.172549, 0.172549, 0.172549, 0.615686)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="MemoryByte" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_eojl2")
+script = ExtResource("1_0we0u")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_65ibe")
+text = "35"
