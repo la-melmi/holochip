@@ -70,7 +70,14 @@ func _on_vm_id_pressed(id: int):
 		VM_PAUSED:
 			var index := vm.get_item_index(id)
 			vm.toggle_item_checked(index)
-			chip.clock.paused = vm.is_item_checked(index)
+			var paused := vm.is_item_checked(index)
+			chip.clock.paused = paused
+			if paused:
+				vm.set_item_disabled( vm.get_item_index(VM_STEP), false )
+				vm.set_item_disabled( vm.get_item_index(VM_FRAME_STEP), false )
+			else:
+				vm.set_item_disabled( vm.get_item_index(VM_STEP), true )
+				vm.set_item_disabled( vm.get_item_index(VM_FRAME_STEP), true )
 		VM_STEP:
 			chip.clock.step = true
 		VM_FRAME_STEP:
