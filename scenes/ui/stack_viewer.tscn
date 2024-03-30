@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/ui/scripts/stack_trace.gd" id="1_0rgvo"]
 [ext_resource type="PackedScene" uid="uid://bg7b2m47f0nkt" path="res://scenes/ui/address.tscn" id="2_r66in"]
 
-[node name="StackTrace" type="Window"]
+[node name="StackViewer" type="Window"]
 position = Vector2i(0, 36)
 wrap_controls = true
 min_size = Vector2i(50, 100)
@@ -26,3 +26,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[connection signal="close_requested" from="." to="." method="hide"]

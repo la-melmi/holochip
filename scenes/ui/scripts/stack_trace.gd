@@ -25,8 +25,10 @@ func update_stack() -> void:
 		item.address = addr
 		stack_container.add_child(item)
 
-
 func clear() -> void:
 	for child in stack_container.get_children():
 		stack_container.remove_child(child)
 		child.queue_free()
+
+func toggle() -> void:
+	visible = not visible

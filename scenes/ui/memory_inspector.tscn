@@ -43,3 +43,6 @@ horizontal_scroll_mode = 0
 layout_direction = 2
 layout_mode = 2
 columns = 16
+
+[connection signal="close_requested" from="." to="." method="hide"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

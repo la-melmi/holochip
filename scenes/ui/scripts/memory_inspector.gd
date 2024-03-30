@@ -6,6 +6,8 @@ extends Window
 
 @onready var container: GridContainer = $ScrollContainer/GridContainer
 
+var drawn: bool
+
 var PC: int:
 	set(new):
 		if is_node_ready() and PC != new:
@@ -51,3 +53,12 @@ func update_PC(old: int, new: int) -> void:
 	
 	container.get_child(new).active = true
 	container.get_child(new + 1).active = true
+
+
+func _on_visibility_changed() -> void:
+	if not drawn:
+		size.y = size.x
+		drawn = true
+
+func toggle() -> void:
+	visible = not visible

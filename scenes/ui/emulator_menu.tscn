@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://byx73u754hwcf"]
+
+[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="1_esxxi"]
+[ext_resource type="Script" path="res://scenes/ui/scripts/emulator_menu.gd" id="2_ld8t0"]
+
+[node name="EmulatorMenu" type="MenuBar"]
+theme_override_fonts/font = ExtResource("1_esxxi")
+theme_override_font_sizes/font_size = 32
+script = ExtResource("2_ld8t0")
+
+[node name="Debug" type="PopupMenu" parent="."]
+theme_override_fonts/font = ExtResource("1_esxxi")
+theme_override_font_sizes/font_size = 32
+item_count = 2
+item_0/text = "Memory"
+item_0/id = 0
+item_1/text = "Stack"
+item_1/id = 1
+
+[connection signal="id_pressed" from="Debug" to="." method="_on_debug_id_pressed"]

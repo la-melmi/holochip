@@ -20,7 +20,7 @@ func update_label() -> void:
 
 
 func make_active() -> void:
-	self["theme_override_styles/panel"].bg_color.r = 0.6
+	self["theme_override_styles/panel"].bg_color.r = 0.8
 
 func make_inactive() -> void:
 	self["theme_override_styles/panel"].bg_color.r = 0.173
