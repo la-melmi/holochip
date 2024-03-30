@@ -32,6 +32,8 @@ var timer_callbacks: Array[Callable]
 var running: bool
 var step: bool
 
+var frame_step: int
+
 var drawn: bool
 
 var thread: Thread
@@ -47,6 +49,9 @@ func _input(event) -> void:
 		step = true
 	if event.is_action_pressed("pause"):
 		paused = not paused
+	if event.is_action_pressed("frame_step"):
+		frame_step = 2
+		print("woop")
 
 
 func stop() -> void:
@@ -74,7 +79,7 @@ func loop() -> void:
 	
 	while running:
 		if not drawn: continue
-		if paused and not step: continue
+		if paused and not (step or frame_step): continue
 		
 		var time := Time.get_ticks_usec()
 		if time == last: continue
@@ -116,7 +121,7 @@ func _process(_delta) -> void:
 	if drawn and running and running_mode == Mode.IDLE:
 		var time := Time.get_ticks_usec()
 		
-		if paused and not step:
+		if paused and not (step or frame_step):
 			last_tick = time
 			last_timer_tick = time
 			return
@@ -142,7 +147,11 @@ func _process(_delta) -> void:
 			if step: break
 		
 		step = false
-
+		if frame_step == 2: frame_step = 1
 
 func _on_display_resized() -> void:
 	drawn = true
+
+func _on_display_refreshed():
+	if frame_step == 1:
+		frame_step = 0

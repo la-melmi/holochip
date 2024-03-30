@@ -77,10 +77,10 @@ height = 32
 
 [node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
 script = ExtResource("11_6gosw")
-system = 2
 display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]
 [connection signal="buffer_resized" from="Display" to="Clock" method="_on_display_resized"]
 [connection signal="buffer_resized" from="Display" to="InterruptController" method="_on_display_buffer_resized"]
+[connection signal="refreshed" from="Display" to="Clock" method="_on_display_refreshed"]
 [connection signal="refreshed" from="Display" to="InterruptController" method="_on_display_refreshed"]
