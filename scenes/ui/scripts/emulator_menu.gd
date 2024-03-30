@@ -5,16 +5,22 @@ signal memory_opened
 signal stack_opened
 signal registers_opened
 
+signal vm_reset
+
 enum {
 	DEBUG_MEMORY,
 	DEBUG_STACK,
 	DEBUG_REGISTERS,
 }
 
-@export var chip: CHIP8
+enum {
+	VM_RESET,
+}
 
 @onready var options: PopupMenu = $Options
 @onready var system: PopupMenu = $Options/System
+
+var chip: CHIP8
 
 func _ready() -> void:
 	options.add_submenu_item("System", "System")
@@ -32,9 +38,22 @@ func _on_debug_id_pressed(id: int):
 		DEBUG_REGISTERS:
 			registers_opened.emit()
 
+
 func _on_system_id_pressed(index: int):
 	for i in system.item_count:
 		system.set_item_checked(i, false)
 	
 	system.set_item_checked(index, true)
 	chip.quirks.system = index as QuirkHandler.System
+
+func _on_chip_ready() -> void:
+	for i in system.item_count:
+		if system.is_item_checked(i):
+			chip.quirks.system = i as QuirkHandler.System
+			break
+
+
+func _on_vm_id_pressed(id: int):
+	match id:
+		VM_RESET:
+			vm_reset.emit()

@@ -18,7 +18,7 @@ var PC: int:
 
 func _ready() -> void:
 	generate_memory_grid()
-	#ram.written.connect()
+	ram.written.connect(_on_ram_written)
 	fix_size.call_deferred()
 
 func fix_size() -> void:
@@ -95,3 +95,8 @@ func _on_stack_viewer_address_clicked(address: int) -> void:
 
 func _on_snap_toggled(toggled_on: bool) -> void:
 	pc_snap = toggled_on
+
+
+func _on_chip_ready() -> void:
+	for addr in ram.memory.size():
+		_on_ram_written(addr)

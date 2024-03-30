@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("4_x8ixd")
-rom = "res://roms/tests/7-beep.ch8"
+rom = "res://roms/tests/5-quirks.ch8"
 ram = ExtResource("8_arboy")
 clock = NodePath("Clock")
 display = NodePath("Display")
@@ -77,6 +77,7 @@ height = 32
 
 [node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
 script = ExtResource("11_6gosw")
+system = 2
 display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]

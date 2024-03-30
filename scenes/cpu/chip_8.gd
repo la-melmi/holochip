@@ -1,5 +1,5 @@
 class_name CHIP8
-extends Node
+extends Control
 
 
 @export_group("Imports")
@@ -36,21 +36,7 @@ var default_font := PackedByteArray([
 
 
 func _ready() -> void:
-	start()
-
-
-func import_bin(pointer: int, path: String) -> int:
-	var file := FileAccess.open(path, FileAccess.READ)
-	
-	while file.get_position() < file.get_length():
-		ram.write(pointer, file.get_8())
-		pointer += 1
-	
-	return pointer
-
-
-func start() -> void:
-	if started: reset()
+	ram.memory.fill(0)
 	
 	if font:
 		import_bin(0, font)
@@ -64,16 +50,13 @@ func start() -> void:
 		import_bin(0x200, rom)
 	
 	clock.start()
-	started = true
 
 
-func reset() -> void:
-	clock.stop()
+func import_bin(pointer: int, path: String) -> int:
+	var file := FileAccess.open(path, FileAccess.READ)
 	
-	ram.memory.fill(0)
-	control_unit.V.fill(0)
-	control_unit.I = 0
-	control_unit.PC = 0x200
-	control_unit.SP = 0
-	control_unit.DT = 0
-	control_unit.ST = 0
+	while file.get_position() < file.get_length():
+		ram.write(pointer, file.get_8())
+		pointer += 1
+	
+	return pointer

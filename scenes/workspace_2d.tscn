@@ -15,6 +15,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ji8ou")
+rom = "res://roms/tests/5-quirks.ch8"
+chip_scene = ExtResource("1_5vnml")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -33,13 +35,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EmulatorMenu" parent="VBoxContainer" node_paths=PackedStringArray("chip") instance=ExtResource("2_ctekb")]
+[node name="EmulatorMenu" parent="VBoxContainer" instance=ExtResource("2_ctekb")]
 layout_mode = 2
-chip = NodePath("../CHIP-8")
-
-[node name="CHIP-8" parent="VBoxContainer" instance=ExtResource("1_5vnml")]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="MemoryInspector" parent="." instance=ExtResource("4_uftxn")]
 initial_position = 2
@@ -53,7 +50,10 @@ min_size = Vector2i(75, 100)
 [node name="RegisterInspector" parent="." instance=ExtResource("6_417eb")]
 visible = false
 
+[connection signal="chip_ready" from="." to="VBoxContainer/EmulatorMenu" method="_on_chip_ready"]
+[connection signal="chip_ready" from="." to="MemoryInspector" method="_on_chip_ready"]
 [connection signal="memory_opened" from="VBoxContainer/EmulatorMenu" to="MemoryInspector" method="toggle"]
 [connection signal="registers_opened" from="VBoxContainer/EmulatorMenu" to="RegisterInspector" method="toggle"]
 [connection signal="stack_opened" from="VBoxContainer/EmulatorMenu" to="StackViewer" method="toggle"]
+[connection signal="vm_reset" from="VBoxContainer/EmulatorMenu" to="." method="init_chip"]
 [connection signal="address_clicked" from="StackViewer" to="MemoryInspector" method="_on_stack_viewer_address_clicked"]
