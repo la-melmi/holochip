@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpepveik1d4v"]
+[gd_scene load_steps=5 format=3 uid="uid://dpepveik1d4v"]
 
 [ext_resource type="Script" path="res://scenes/ui/scripts/memory_byte.gd" id="1_0we0u"]
 [ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="2_65ibe"]
@@ -14,7 +14,24 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mulk8"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 0, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 24.0
+expand_margin_bottom = 2.0
+
 [node name="MemoryByte" type="PanelContainer"]
+mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_eojl2")
 script = ExtResource("1_0we0u")
 
@@ -22,3 +39,8 @@ script = ExtResource("1_0we0u")
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_65ibe")
 text = "35"
+
+[node name="Selection" type="Panel" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mulk8")

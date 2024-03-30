@@ -50,3 +50,4 @@ min_size = Vector2i(75, 100)
 
 [connection signal="memory_opened" from="VBoxContainer/EmulatorMenu" to="MemoryInspector" method="toggle"]
 [connection signal="stack_opened" from="VBoxContainer/EmulatorMenu" to="StackViewer" method="toggle"]
+[connection signal="address_clicked" from="StackViewer" to="MemoryInspector" method="_on_stack_viewer_address_clicked"]

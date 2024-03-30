@@ -31,6 +31,8 @@ func generate_memory_grid() -> void:
 	for byte in ram.memory:
 		var byte_display := byte_scene.instantiate()
 		byte_display.byte = byte
+		byte_display.memory_selected.connect(_on_memory_selected)
+		byte_display.unselect_all_memory.connect(_on_unselect_all_memory)
 		container.add_child(byte_display)
 	
 	ram.mutex.unlock()
@@ -60,5 +62,22 @@ func _on_visibility_changed() -> void:
 		size.y = size.x
 		drawn = true
 
+func _on_memory_selected(selection: PanelContainer) -> void:
+	grab_focus()
+	$ScrollContainer.ensure_control_visible(selection)
+	for byte in container.get_children():
+		if byte != selection:
+			byte.selected = false
+
+func _on_unselect_all_memory() -> void:
+	for byte in container.get_children():
+		byte.selected = false
+
+
 func toggle() -> void:
 	visible = not visible
+
+
+func _on_stack_viewer_address_clicked(address: int) -> void:
+	print(address)
+	container.get_child(address).selected = true

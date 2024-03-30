@@ -5,7 +5,7 @@ signal address_clicked(address: int)
 
 @export var address_scene: PackedScene
 
-@onready var stack_container: VBoxContainer = $VBoxContainer
+@onready var stack_container: VBoxContainer = $ScrollContainer/VBoxContainer
 
 @export var stack: Array[int]:
 	set(new):
@@ -18,11 +18,20 @@ func _ready() -> void:
 func update_stack() -> void:
 	clear()
 	
+	title = "Depth: %d" % stack.size()
+	
 	for i in stack.size():
 		var addr := stack[-i-1] # Iterate backwards
 		
 		var item := address_scene.instantiate()
 		item.address = addr
+		item.clicked.connect(_on_address_clicked)
+		stack_container.add_child(item)
+	
+	for i in 16 - stack.size():
+		var item := address_scene.instantiate()
+		item.address = 0
+		item.fake = true
 		stack_container.add_child(item)
 
 func clear() -> void:
@@ -32,3 +41,6 @@ func clear() -> void:
 
 func toggle() -> void:
 	visible = not visible
+
+func _on_address_clicked(address: int) -> void:
+	address_clicked.emit(address)

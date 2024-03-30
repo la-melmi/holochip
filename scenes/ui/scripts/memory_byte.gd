@@ -1,6 +1,9 @@
 extends PanelContainer
 
 
+signal memory_selected(node: PanelContainer)
+signal unselect_all_memory
+
 var byte: int:
 	set(value):
 		byte = value
@@ -12,8 +15,22 @@ var active: bool:
 		if active: make_active()
 		else: make_inactive()
 
+var selected: bool = false:
+	set(state):
+		selected = state
+		$Selection.visible = state
+		if selected: memory_selected.emit(self)
+
 func _ready() -> void:
 	self["theme_override_styles/panel"] = self["theme_override_styles/panel"].duplicate()
+	selected = false
+
+func _gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("click"):
+		selected = true
+	if event.is_action_pressed("right_click"):
+		selected = false
+		unselect_all_memory.emit()
 
 func update_label() -> void:
 	$Label.text = HexTools.to_hex(byte, 2)
