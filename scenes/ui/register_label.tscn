@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bespucpksbbq"]
+
+[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="2_45n1k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eojl2"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 1.0
+content_margin_bottom = 0.0
+bg_color = Color(0.172549, 0.172549, 0.172549, 0.615686)
+draw_center = false
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="RegisterLabel" type="Label"]
+offset_right = 17.0
+offset_bottom = 16.0
+theme_override_fonts/font = ExtResource("2_45n1k")
+theme_override_styles/normal = SubResource("StyleBoxFlat_eojl2")
+text = "RegisterLabel"

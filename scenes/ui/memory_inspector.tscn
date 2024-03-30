@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://d16b3vclypg07"]
+[gd_scene load_steps=6 format=3 uid="uid://d16b3vclypg07"]
 
 [ext_resource type="Script" path="res://scenes/ui/scripts/memory_inspector.gd" id="1_cneei"]
 [ext_resource type="PackedScene" uid="uid://dpepveik1d4v" path="res://scenes/ui/memory_byte.tscn" id="2_g1r0q"]
 [ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="3_1oib0"]
+[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="4_g3vpl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co61m"]
 content_margin_left = 6.0
@@ -15,7 +16,9 @@ anti_aliasing_size = 2.0
 
 [node name="MemoryInspector" type="Window"]
 position = Vector2i(0, 36)
+size = Vector2i(161, 100)
 wrap_controls = true
+transient = true
 min_size = Vector2i(100, 100)
 script = ExtResource("1_cneei")
 byte_scene = ExtResource("2_g1r0q")
@@ -29,20 +32,30 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.251087, 0.251087, 0.251087, 1)
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_direction = 3
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_co61m")
 horizontal_scroll_mode = 0
 
-[node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/ScrollContainer"]
 layout_direction = 2
 layout_mode = 2
 columns = 16
 
+[node name="Snap" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_g3vpl")
+text = "Keep PC Visible"
+
 [connection signal="close_requested" from="." to="." method="hide"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="toggled" from="VBoxContainer/Snap" to="." method="_on_snap_toggled"]

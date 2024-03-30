@@ -1,0 +1,227 @@
+[gd_scene load_steps=5 format=3 uid="uid://88tp6k25nchg"]
+
+[ext_resource type="PackedScene" uid="uid://dpahjsbjhvb2y" path="res://scenes/ui/register.tscn" id="1_hxs4a"]
+[ext_resource type="Script" path="res://scenes/ui/scripts/register_inspector.gd" id="1_kca2k"]
+[ext_resource type="PackedScene" uid="uid://bespucpksbbq" path="res://scenes/ui/register_label.tscn" id="2_2ai3e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bctn6"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 0.0705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25098, 0.25098, 0.25098, 0)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="RegisterInspector" type="Window" node_paths=PackedStringArray("v_container", "i_panel", "pc_panel", "dt_panel", "st_panel")]
+position = Vector2i(0, 36)
+size = Vector2i(353, 100)
+wrap_controls = true
+transient = true
+script = ExtResource("1_kca2k")
+v_container = NodePath("PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues")
+i_panel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/I/Register")
+pc_panel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/PC/Register")
+dt_panel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/DT/Register")
+st_panel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/ST/Register")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.251087, 0.251087, 0.251087, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bctn6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="VRegisters" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0.0196078)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/VRegisters"]
+layout_mode = 2
+
+[node name="VRegisterValues" type="HBoxContainer" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer"]
+layout_mode = 2
+
+[node name="V0" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V1" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V2" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V3" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V4" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V5" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V6" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V7" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V8" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="V9" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VA" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VB" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VC" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VD" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VE" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VF" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="VRegisterLabels" type="HBoxContainer" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer"]
+layout_mode = 2
+
+[node name="V0" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V0"
+
+[node name="V1" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V1"
+
+[node name="V2" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V2"
+
+[node name="V3" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V3"
+
+[node name="V4" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V4"
+
+[node name="V5" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V5"
+
+[node name="V6" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V6"
+
+[node name="V7" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V7"
+
+[node name="V8" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V8"
+
+[node name="V9" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "V9"
+
+[node name="VA" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VA"
+
+[node name="VB" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VB"
+
+[node name="VC" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VC"
+
+[node name="VD" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VD"
+
+[node name="VE" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VE"
+
+[node name="VF" parent="PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterLabels" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "VF"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="I" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/I" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+nibbles = 4
+
+[node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/I" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "I"
+horizontal_alignment = 1
+
+[node name="PC" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/PC" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+nibbles = 4
+
+[node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/PC" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "PC"
+horizontal_alignment = 1
+
+[node name="DT" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/DT" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/DT" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "DT"
+
+[node name="ST" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/ST" instance=ExtResource("1_hxs4a")]
+layout_mode = 2
+
+[node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/ST" instance=ExtResource("2_2ai3e")]
+layout_mode = 2
+text = "ST
+"
+
+[connection signal="close_requested" from="." to="." method="hide"]

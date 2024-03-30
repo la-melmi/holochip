@@ -140,6 +140,8 @@ func _process(_delta) -> void:
 			interrupt_controller.acknowledge()
 			
 			if step: break
+		
+		step = false
 
 
 func _on_display_resized() -> void:

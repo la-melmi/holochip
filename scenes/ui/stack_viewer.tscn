@@ -11,6 +11,7 @@ content_margin_left = 7.0
 position = Vector2i(0, 36)
 size = Vector2i(100, 120)
 wrap_controls = true
+transient = true
 min_size = Vector2i(100, 108)
 theme_override_fonts/title_font = ExtResource("1_0nlyv")
 script = ExtResource("1_0rgvo")

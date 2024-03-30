@@ -3,6 +3,7 @@ extends PanelContainer
 
 signal memory_selected(node: PanelContainer)
 signal unselect_all_memory
+signal odd_address_selected(new_address: int)
 
 var byte: int:
 	set(value):
@@ -17,9 +18,14 @@ var active: bool:
 
 var selected: bool = false:
 	set(state):
+		if state and addr % 2 == 1: # Alig 
+			odd_address_selected.emit(addr - 1)
+			return
 		selected = state
 		$Selection.visible = state
 		if selected: memory_selected.emit(self)
+
+var addr: int
 
 func _ready() -> void:
 	self["theme_override_styles/panel"] = self["theme_override_styles/panel"].duplicate()
