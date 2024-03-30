@@ -33,8 +33,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EmulatorMenu" parent="VBoxContainer" instance=ExtResource("2_ctekb")]
+[node name="EmulatorMenu" parent="VBoxContainer" node_paths=PackedStringArray("chip") instance=ExtResource("2_ctekb")]
 layout_mode = 2
+chip = NodePath("../CHIP-8")
 
 [node name="CHIP-8" parent="VBoxContainer" instance=ExtResource("1_5vnml")]
 layout_mode = 2

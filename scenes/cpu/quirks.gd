@@ -3,10 +3,10 @@ extends Node
 
 
 enum System {
-	CUSTOM,
 	CHIP_8,
 	SUPER_CHIP,
-	XO_CHIP
+	XO_CHIP,
+	CUSTOM,
 }
 
 @export var legacy: bool

@@ -22,7 +22,7 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="RegisterInspector" type="Window" node_paths=PackedStringArray("v_container", "i_panel", "pc_panel", "dt_panel", "st_panel")]
-position = Vector2i(0, 36)
+initial_position = 2
 size = Vector2i(353, 100)
 wrap_controls = true
 transient = true

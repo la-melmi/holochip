@@ -11,6 +11,9 @@ extends Node
 @export var clock: Clock
 @export var display: CHIPDisplay
 @export var control_unit: CHIPDecoder
+@onready var quirks: QuirkHandler = $Quirks
+
+var started: bool = false
 
 var default_font := PackedByteArray([
 	0xF0, 0x90, 0x90, 0x90, 0xF0, # 0
@@ -33,6 +36,22 @@ var default_font := PackedByteArray([
 
 
 func _ready() -> void:
+	start()
+
+
+func import_bin(pointer: int, path: String) -> int:
+	var file := FileAccess.open(path, FileAccess.READ)
+	
+	while file.get_position() < file.get_length():
+		ram.write(pointer, file.get_8())
+		pointer += 1
+	
+	return pointer
+
+
+func start() -> void:
+	if started: reset()
+	
 	if font:
 		import_bin(0, font)
 	else:
@@ -45,13 +64,16 @@ func _ready() -> void:
 		import_bin(0x200, rom)
 	
 	clock.start()
+	started = true
 
 
-func import_bin(pointer: int, path: String) -> int:
-	var file := FileAccess.open(path, FileAccess.READ)
+func reset() -> void:
+	clock.stop()
 	
-	while file.get_position() < file.get_length():
-		ram.write(pointer, file.get_8())
-		pointer += 1
-	
-	return pointer
+	ram.memory.fill(0)
+	control_unit.V.fill(0)
+	control_unit.I = 0
+	control_unit.PC = 0x200
+	control_unit.SP = 0
+	control_unit.DT = 0
+	control_unit.ST = 0
