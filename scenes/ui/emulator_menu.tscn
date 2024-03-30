@@ -11,9 +11,17 @@ script = ExtResource("2_ld8t0")
 [node name="VM" type="PopupMenu" parent="."]
 theme_override_fonts/font = ExtResource("3_3inru")
 theme_override_font_sizes/font_size = 18
-item_count = 1
+hide_on_checkable_item_selection = false
+item_count = 4
 item_0/text = "Reset"
 item_0/id = 0
+item_1/text = "Paused"
+item_1/checkable = 1
+item_1/id = 1
+item_2/text = "Step"
+item_2/id = 2
+item_3/text = "Frame Step"
+item_3/id = 3
 
 [node name="Options" type="PopupMenu" parent="."]
 size = Vector2i(176, 100)

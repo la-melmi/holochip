@@ -15,10 +15,14 @@ enum {
 
 enum {
 	VM_RESET,
+	VM_PAUSED,
+	VM_STEP,
+	VM_FRAME_STEP,
 }
 
 @onready var options: PopupMenu = $Options
 @onready var system: PopupMenu = $Options/System
+@onready var vm: PopupMenu = $VM
 
 var chip: CHIP8
 
@@ -57,3 +61,11 @@ func _on_vm_id_pressed(id: int):
 	match id:
 		VM_RESET:
 			vm_reset.emit()
+		VM_PAUSED:
+			var index := vm.get_item_index(id)
+			vm.toggle_item_checked(index)
+			chip.clock.paused = vm.is_item_checked(index)
+		VM_STEP:
+			chip.clock.step = true
+		VM_FRAME_STEP:
+			chip.clock.frame_step = 2
