@@ -49,5 +49,5 @@ item_1/id = 1
 item_2/text = "Registers"
 item_2/id = 2
 
-[connection signal="index_pressed" from="Options/System" to="." method="_on_system_index_pressed"]
+[connection signal="id_pressed" from="Options/System" to="." method="_on_system_id_pressed"]
 [connection signal="id_pressed" from="Debug" to="." method="_on_debug_id_pressed"]

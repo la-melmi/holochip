@@ -32,7 +32,7 @@ func _on_debug_id_pressed(id: int):
 		DEBUG_REGISTERS:
 			registers_opened.emit()
 
-func _on_system_index_pressed(index: int):
+func _on_system_id_pressed(index: int):
 	for i in system.item_count:
 		system.set_item_checked(i, false)
 	
