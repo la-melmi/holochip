@@ -20,6 +20,11 @@ enum {
 	VM_FRAME_STEP,
 }
 
+enum {
+	OPTIONS_LEGACY,
+	OPTIONS_SYSTEM,
+}
+
 @onready var options: PopupMenu = $Options
 @onready var system: PopupMenu = $Options/System
 @onready var vm: PopupMenu = $VM
@@ -51,6 +56,7 @@ func _on_system_id_pressed(index: int):
 	chip.quirks.system = index as QuirkHandler.System
 
 func _on_chip_ready() -> void:
+	chip.quirks.legacy = options.is_item_checked( options.get_item_index(OPTIONS_LEGACY) )
 	for i in system.item_count:
 		if system.is_item_checked(i):
 			chip.quirks.system = i as QuirkHandler.System
@@ -69,3 +75,11 @@ func _on_vm_id_pressed(id: int):
 			chip.clock.step = true
 		VM_FRAME_STEP:
 			chip.clock.frame_step = 2
+
+
+func _on_options_id_pressed(id: int):
+	match id:
+		OPTIONS_LEGACY:
+			var index := options.get_item_index(id)
+			options.toggle_item_checked(index)
+			chip.quirks.legacy = options.is_item_checked(index)
