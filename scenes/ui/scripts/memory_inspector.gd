@@ -71,6 +71,9 @@ func _on_visibility_changed() -> void:
 		drawn = true
 
 func _on_memory_selected(selection: PanelContainer) -> void:
+	if not visible:
+		show()
+		await get_tree().process_frame
 	grab_focus()
 	scroll.ensure_control_visible(selection)
 	for byte in container.get_children():
