@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bf2jqy6ccxxmk"]
+[gd_scene load_steps=8 format=3 uid="uid://bf2jqy6ccxxmk"]
 
 [ext_resource type="PackedScene" uid="uid://8fi20pxoff6i" path="res://scenes/chip_8.tscn" id="1_5vnml"]
 [ext_resource type="Script" path="res://scenes/ui/scripts/workspace_2d.gd" id="1_ji8ou"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://1lcmyb4a8u0l" path="res://scenes/ui/stack_viewer.tscn" id="2_nacv7"]
 [ext_resource type="PackedScene" uid="uid://d16b3vclypg07" path="res://scenes/ui/memory_inspector.tscn" id="4_uftxn"]
 [ext_resource type="PackedScene" uid="uid://88tp6k25nchg" path="res://scenes/ui/registers.tscn" id="6_417eb"]
+[ext_resource type="Theme" uid="uid://c7om4y0ikehy2" path="res://resources/base_theme.tres" id="7_g4lje"]
 
 [node name="Workspace2D" type="Control"]
 layout_mode = 3
@@ -14,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("7_g4lje")
 script = ExtResource("1_ji8ou")
 chip_scene = ExtResource("1_5vnml")
 

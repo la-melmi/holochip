@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpepveik1d4v"]
+[gd_scene load_steps=4 format=3 uid="uid://dpepveik1d4v"]
 
 [ext_resource type="Script" path="res://scenes/ui/scripts/memory_byte.gd" id="1_0we0u"]
-[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="2_65ibe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eojl2"]
 content_margin_left = 2.0
@@ -37,7 +36,6 @@ script = ExtResource("1_0we0u")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_65ibe")
 text = "35"
 
 [node name="Selection" type="Panel" parent="."]

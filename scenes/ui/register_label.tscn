@@ -1,6 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bespucpksbbq"]
-
-[ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="2_45n1k"]
+[gd_scene load_steps=2 format=3 uid="uid://bespucpksbbq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eojl2"]
 content_margin_left = 2.0
@@ -17,6 +15,5 @@ corner_radius_bottom_left = 2
 [node name="RegisterLabel" type="Label"]
 offset_right = 17.0
 offset_bottom = 16.0
-theme_override_fonts/font = ExtResource("2_45n1k")
 theme_override_styles/normal = SubResource("StyleBoxFlat_eojl2")
 text = "RegisterLabel"

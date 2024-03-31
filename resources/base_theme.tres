@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c7om4y0ikehy2"]
+
+[ext_resource type="FontFile" uid="uid://li1oeexcxxde" path="res://assets/fonts/m6x11plus.ttf" id="1_nvelu"]
+
+[resource]
+default_font = ExtResource("1_nvelu")
+default_font_size = 18
