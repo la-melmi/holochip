@@ -56,4 +56,5 @@ visible = false
 [connection signal="registers_opened" from="VBoxContainer/EmulatorMenu" to="RegisterInspector" method="toggle"]
 [connection signal="stack_opened" from="VBoxContainer/EmulatorMenu" to="StackViewer" method="toggle"]
 [connection signal="vm_reset" from="VBoxContainer/EmulatorMenu" to="." method="init_chip"]
-[connection signal="address_clicked" from="StackViewer" to="MemoryInspector" method="_on_stack_viewer_address_clicked"]
+[connection signal="address_clicked" from="StackViewer" to="MemoryInspector" method="_on_address_selected"]
+[connection signal="register_selected" from="RegisterInspector" to="MemoryInspector" method="_on_address_selected"]

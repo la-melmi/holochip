@@ -18,7 +18,7 @@ func _gui_input(event: InputEvent) -> void:
 		clicked.emit(address)
 
 func update_address() -> void:
-	$Label.text = "0x" + HexTools.to_hex(address, 4)
+	$Label.text = HexTools.to_hex(address, 4)
 
 func update_fake() -> void:
 	if fake:

@@ -26,6 +26,7 @@ initial_position = 2
 size = Vector2i(353, 100)
 wrap_controls = true
 transient = true
+unresizable = true
 script = ExtResource("1_kca2k")
 v_container = NodePath("PanelContainer/VBoxContainer/VRegisters/VBoxContainer/VRegisterValues")
 i_panel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/I/Register")
@@ -42,17 +43,22 @@ grow_vertical = 2
 color = Color(0.251087, 0.251087, 0.251087, 1)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bctn6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
+alignment = 1
 
 [node name="VRegisters" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 self_modulate = Color(1, 1, 1, 0.0196078)
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/VRegisters"]
 layout_mode = 2
@@ -185,6 +191,7 @@ layout_mode = 2
 [node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/I" instance=ExtResource("1_hxs4a")]
 layout_mode = 2
 nibbles = 4
+selectable = true
 
 [node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/I" instance=ExtResource("2_2ai3e")]
 layout_mode = 2
@@ -197,6 +204,7 @@ layout_mode = 2
 [node name="Register" parent="PanelContainer/VBoxContainer/HBoxContainer/PC" instance=ExtResource("1_hxs4a")]
 layout_mode = 2
 nibbles = 4
+selectable = true
 
 [node name="RegisterLabel" parent="PanelContainer/VBoxContainer/HBoxContainer/PC" instance=ExtResource("2_2ai3e")]
 layout_mode = 2
@@ -225,3 +233,5 @@ text = "ST
 "
 
 [connection signal="close_requested" from="." to="." method="hide"]
+[connection signal="selected" from="PanelContainer/VBoxContainer/HBoxContainer/I/Register" to="." method="_on_register_selected"]
+[connection signal="selected" from="PanelContainer/VBoxContainer/HBoxContainer/PC/Register" to="." method="_on_register_selected"]

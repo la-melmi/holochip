@@ -89,7 +89,7 @@ func toggle() -> void:
 	visible = not visible
 
 
-func _on_stack_viewer_address_clicked(address: int) -> void:
+func _on_address_selected(address: int) -> void:
 	container.get_child(address).selected = true
 
 

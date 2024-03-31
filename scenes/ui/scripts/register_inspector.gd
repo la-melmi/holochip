@@ -1,6 +1,8 @@
 extends Window
 
 
+signal register_selected(address: int)
+
 @export var v_container: BoxContainer
 @export var i_panel: RegisterDisplay
 @export var pc_panel: RegisterDisplay
@@ -24,3 +26,7 @@ func update_registers() -> void:
 
 func toggle() -> void:
 	visible = not visible
+
+
+func _on_register_selected(address: int):
+	register_selected.emit(address)
