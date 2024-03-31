@@ -31,7 +31,7 @@ control_unit = NodePath("ControlUnit")
 
 [node name="Clock" type="Node" parent="." node_paths=PackedStringArray("interrupt_controller")]
 script = ExtResource("6_mfduj")
-clockspeed = 1200.0
+clockspeed = 60000.0
 log_time_loss = true
 interrupt_controller = NodePath("../InterruptController")
 
@@ -77,6 +77,7 @@ height = 32
 
 [node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
 script = ExtResource("11_6gosw")
+system = 2
 display = NodePath("../Display")
 
 [connection signal="key_pressed" from="Keypad" to="InterruptController" method="_on_keypad_key_pressed"]

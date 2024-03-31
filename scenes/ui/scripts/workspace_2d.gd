@@ -20,9 +20,9 @@ func _ready() -> void:
 
 func _process(_delta) -> void:
 	chip.control_unit.mutex.lock()
-	stack_viewer.stack = chip.control_unit.stack
+	stack_viewer.stack = chip.control_unit.stack.duplicate()
 	memory_inspector.PC = chip.control_unit.PC
-	register_inspector.V = chip.control_unit.V
+	register_inspector.V = chip.control_unit.V.duplicate()
 	register_inspector.I = chip.control_unit.I
 	register_inspector.PC = chip.control_unit.PC
 	register_inspector.DT = chip.control_unit.DT

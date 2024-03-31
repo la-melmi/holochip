@@ -18,6 +18,7 @@ var INSTRUCTION_SET = [
 		0x0000,
 		[],
 		func HALT(cpu: CHIPDecoder):
+			cpu.clock.running = false
 			cpu.clock.stop.call_deferred()
 			),
 	

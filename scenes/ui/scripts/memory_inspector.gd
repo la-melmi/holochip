@@ -19,11 +19,6 @@ var PC: int:
 func _ready() -> void:
 	generate_memory_grid()
 	ram.written.connect(_on_ram_written)
-	fix_size.call_deferred()
-
-func fix_size() -> void:
-	size.y = size.x
-	max_size.x = size.x
 
 func generate_memory_grid() -> void:
 	clear()

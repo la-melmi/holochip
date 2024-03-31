@@ -48,8 +48,7 @@ func _ready() -> void:
 	
 	if rom:
 		import_bin(0x200, rom)
-	
-	clock.start()
+		clock.start()
 
 
 func import_bin(pointer: int, path: String) -> int:
