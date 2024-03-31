@@ -15,7 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ji8ou")
-rom = "res://roms/tests/5-quirks.ch8"
 chip_scene = ExtResource("1_5vnml")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -50,11 +49,37 @@ min_size = Vector2i(75, 100)
 [node name="RegisterInspector" parent="." instance=ExtResource("6_417eb")]
 visible = false
 
+[node name="BuiltinROMSelect" type="FileDialog" parent="."]
+title = "Select Builtin ROM"
+initial_position = 2
+size = Vector2i(600, 500)
+min_size = Vector2i(500, 400)
+ok_button_text = "Open"
+mode_overrides_title = false
+file_mode = 0
+root_subfolder = "res://roms"
+filters = PackedStringArray("*.ch8; ROMs")
+
+[node name="FilesystemROMSelect" type="FileDialog" parent="."]
+title = "Select ROM"
+initial_position = 2
+size = Vector2i(600, 500)
+min_size = Vector2i(500, 400)
+ok_button_text = "Open"
+mode_overrides_title = false
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.ch8; ROMs")
+
 [connection signal="chip_ready" from="." to="VBoxContainer/EmulatorMenu" method="_on_chip_ready"]
 [connection signal="chip_ready" from="." to="MemoryInspector" method="_on_chip_ready"]
+[connection signal="builtin_rom_dialog_opened" from="VBoxContainer/EmulatorMenu" to="BuiltinROMSelect" method="show"]
+[connection signal="custom_rom_dialog_opened" from="VBoxContainer/EmulatorMenu" to="FilesystemROMSelect" method="show"]
 [connection signal="memory_opened" from="VBoxContainer/EmulatorMenu" to="MemoryInspector" method="toggle"]
 [connection signal="registers_opened" from="VBoxContainer/EmulatorMenu" to="RegisterInspector" method="toggle"]
 [connection signal="stack_opened" from="VBoxContainer/EmulatorMenu" to="StackViewer" method="toggle"]
 [connection signal="vm_reset" from="VBoxContainer/EmulatorMenu" to="." method="init_chip"]
 [connection signal="address_clicked" from="StackViewer" to="MemoryInspector" method="_on_address_selected"]
 [connection signal="register_selected" from="RegisterInspector" to="MemoryInspector" method="_on_address_selected"]
+[connection signal="file_selected" from="BuiltinROMSelect" to="." method="_on_rom_selected"]
+[connection signal="file_selected" from="FilesystemROMSelect" to="." method="_on_rom_selected"]

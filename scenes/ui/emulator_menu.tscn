@@ -8,6 +8,19 @@ theme_override_fonts/font = ExtResource("3_3inru")
 theme_override_font_sizes/font_size = 18
 script = ExtResource("2_ld8t0")
 
+[node name="File" type="PopupMenu" parent="."]
+theme_override_fonts/font = ExtResource("3_3inru")
+theme_override_font_sizes/font_size = 18
+
+[node name="Open" type="PopupMenu" parent="File"]
+theme_override_fonts/font = ExtResource("3_3inru")
+theme_override_font_sizes/font_size = 18
+item_count = 2
+item_0/text = "Builtin"
+item_0/id = 0
+item_1/text = "Custom"
+item_1/id = 1
+
 [node name="VM" type="PopupMenu" parent="."]
 theme_override_fonts/font = ExtResource("3_3inru")
 theme_override_font_sizes/font_size = 18
@@ -65,6 +78,7 @@ item_1/id = 1
 item_2/text = "Registers"
 item_2/id = 2
 
+[connection signal="id_pressed" from="File/Open" to="." method="_on_open_id_pressed"]
 [connection signal="id_pressed" from="VM" to="." method="_on_vm_id_pressed"]
 [connection signal="id_pressed" from="Options" to="." method="_on_options_id_pressed"]
 [connection signal="id_pressed" from="Options/System" to="." method="_on_system_id_pressed"]

@@ -1,11 +1,18 @@
 extends MenuBar
 
+signal builtin_rom_dialog_opened
+signal custom_rom_dialog_opened
 
 signal memory_opened
 signal stack_opened
 signal registers_opened
 
 signal vm_reset
+
+enum {
+	OPEN_BUILTIN,
+	OPEN_CUSTOM,
+}
 
 enum {
 	DEBUG_MEMORY,
@@ -25,6 +32,7 @@ enum {
 	OPTIONS_SYSTEM,
 }
 
+@onready var file: PopupMenu = $File
 @onready var options: PopupMenu = $Options
 @onready var system: PopupMenu = $Options/System
 @onready var vm: PopupMenu = $VM
@@ -32,6 +40,7 @@ enum {
 var chip: CHIP8
 
 func _ready() -> void:
+	file.add_submenu_item("Open ROM", "Open")
 	options.add_submenu_item("System", "System")
 	setup.call_deferred()
 
@@ -90,3 +99,11 @@ func _on_options_id_pressed(id: int):
 			var index := options.get_item_index(id)
 			options.toggle_item_checked(index)
 			chip.quirks.legacy = options.is_item_checked(index)
+
+
+func _on_open_id_pressed(id: int):
+	match id:
+		OPEN_BUILTIN:
+			builtin_rom_dialog_opened.emit()
+		OPEN_CUSTOM:
+			custom_rom_dialog_opened.emit()

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://35443whsiij0"]
+
+[node name="BuiltinROMSelect" type="FileDialog"]
+title = "Select Builtin ROM"
+initial_position = 2
+size = Vector2i(600, 500)
+visible = true
+min_size = Vector2i(500, 400)
+ok_button_text = "Open"
+mode_overrides_title = false
+file_mode = 0
+root_subfolder = "res://roms"
+filters = PackedStringArray("*.ch8; ROMs")

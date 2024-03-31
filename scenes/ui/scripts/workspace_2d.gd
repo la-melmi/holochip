@@ -43,3 +43,7 @@ func init_chip() -> void:
 	
 	main_container.add_child(chip)
 	chip_ready.emit()
+
+func _on_rom_selected(path: String) -> void:
+	rom = path
+	init_chip()
