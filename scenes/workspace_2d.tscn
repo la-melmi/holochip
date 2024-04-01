@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bf2jqy6ccxxmk"]
+[gd_scene load_steps=9 format=3 uid="uid://bf2jqy6ccxxmk"]
 
 [ext_resource type="PackedScene" uid="uid://8fi20pxoff6i" path="res://scenes/chip_8.tscn" id="1_5vnml"]
 [ext_resource type="Script" path="res://scenes/ui/scripts/workspace_2d.gd" id="1_ji8ou"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://d16b3vclypg07" path="res://scenes/ui/memory_inspector.tscn" id="4_uftxn"]
 [ext_resource type="PackedScene" uid="uid://88tp6k25nchg" path="res://scenes/ui/registers.tscn" id="6_417eb"]
 [ext_resource type="Theme" uid="uid://c7om4y0ikehy2" path="res://resources/base_theme.tres" id="7_g4lje"]
+[ext_resource type="PackedScene" uid="uid://uonxdon8bs3k" path="res://scenes/ui/disassembler.tscn" id="8_i83hc"]
 
 [node name="Workspace2D" type="Control"]
 layout_mode = 3
@@ -51,6 +52,9 @@ min_size = Vector2i(75, 100)
 [node name="RegisterInspector" parent="." instance=ExtResource("6_417eb")]
 visible = false
 
+[node name="Disassembler" parent="." instance=ExtResource("8_i83hc")]
+visible = false
+
 [node name="BuiltinROMSelect" type="FileDialog" parent="."]
 title = "Select Builtin ROM"
 initial_position = 2
@@ -75,8 +79,10 @@ filters = PackedStringArray("*.ch8; ROMs")
 
 [connection signal="chip_ready" from="." to="VBoxContainer/EmulatorMenu" method="_on_chip_ready"]
 [connection signal="chip_ready" from="." to="MemoryInspector" method="_on_chip_ready"]
+[connection signal="chip_ready" from="." to="Disassembler" method="_on_chip_ready"]
 [connection signal="builtin_rom_dialog_opened" from="VBoxContainer/EmulatorMenu" to="BuiltinROMSelect" method="show"]
 [connection signal="custom_rom_dialog_opened" from="VBoxContainer/EmulatorMenu" to="FilesystemROMSelect" method="show"]
+[connection signal="disassembler_opened" from="VBoxContainer/EmulatorMenu" to="Disassembler" method="toggle"]
 [connection signal="memory_opened" from="VBoxContainer/EmulatorMenu" to="MemoryInspector" method="toggle"]
 [connection signal="registers_opened" from="VBoxContainer/EmulatorMenu" to="RegisterInspector" method="toggle"]
 [connection signal="stack_opened" from="VBoxContainer/EmulatorMenu" to="StackViewer" method="toggle"]

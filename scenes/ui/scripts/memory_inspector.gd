@@ -19,6 +19,13 @@ var PC: int:
 func _ready() -> void:
 	generate_memory_grid()
 	ram.written.connect(_on_ram_written)
+	fix_size.call_deferred()
+
+func fix_size() -> void:
+	size.x = int(container.size.x) + 20
+	min_size.x = size.x
+	max_size.x = size.x
+	size.y = size.x
 
 func generate_memory_grid() -> void:
 	clear()
@@ -95,6 +102,6 @@ func _on_snap_toggled(toggled_on: bool) -> void:
 	pc_snap = toggled_on
 
 
-func _on_chip_ready() -> void:
+func _on_chip_ready(_chip: CHIP8) -> void:
 	for addr in ram.memory.size():
 		_on_ram_written(addr)

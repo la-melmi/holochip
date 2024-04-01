@@ -14,6 +14,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"HALT", # Halt execution, but don't exit.
 		&"0000",
+		"0x0000",
+		"0x0000",
 		0xffff,
 		0x0000,
 		[],
@@ -25,6 +27,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SCROLL_DOWN_N", # Scroll down by 0-15 pixels
 		&"00CN",
+		"SCD 0x%X",
+		"scroll-down 0x%X",
 		0xfff0,
 		0x00C0,
 		[ N ],
@@ -33,8 +37,10 @@ var INSTRUCTION_SET = [
 			),
 	
 	Instruction.new(
-		&"SCROLL_UP_N", # Scroll down by 0-15 pixels
+		&"SCROLL_UP_N", # Scroll up by 0-15 pixels
 		&"00DN",
+		"SCU 0x%X",
+		"scroll-up 0x%X",
 		0xfff0,
 		0x00D0,
 		[ N ],
@@ -45,6 +51,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"CLS", # Clear
 		&"00E0",
+		"CLS",
+		"clear",
 		0xffff,
 		0x00E0,
 		[],
@@ -55,6 +63,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"RET", # Return
 		&"00EE",
+		"RET",
+		"return",
 		0xffff,
 		0x00EE,
 		[],
@@ -65,6 +75,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SCROLL_RIGHT", # Scroll right by 4 pixels
 		&"00FB",
+		"SCR",
+		"scroll-right",
 		0xffff,
 		0x00FB,
 		[],
@@ -75,6 +87,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SCROLL_LEFT", # Scroll left by 4 pixels
 		&"00FC",
+		"SCL",
+		"scroll-left",
 		0xffff,
 		0x00FC,
 		[],
@@ -85,6 +99,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"EXIT", # Immediately exit
 		&"00FD",
+		"EXIT",
+		"exit",
 		0xffff,
 		0x00FD,
 		[],
@@ -96,6 +112,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LORES", # Disable hires mode and return to lores 64x32
 		&"00FE",
+		"LOW",
+		"lores",
 		0xffff,
 		0x00FE,
 		[],
@@ -107,6 +125,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"HIRES", # Enable hires mode
 		&"00FF",
+		"HIGH",
+		"hires",
 		0xffff,
 		0x00FF,
 		[],
@@ -118,6 +138,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"CLS_64", # Legacy 64x64 clearscreen
 		&"0230",
+		"CLS 64",
+		"clear 64",
 		0xffff,
 		0x0230,
 		[],
@@ -128,6 +150,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"JP_ADDR", # Jump
 		&"1NNN",
+		"JP 0x%X",
+		"jump 0x%X",
 		0xf000,
 		0x1000,
 		[ NNN ],
@@ -144,6 +168,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"CALL_ADDR", # Call
 		&"2NNN",
+		"CALL 0x%X",
+		":call 0x%X",
 		0xf000,
 		0x2000,
 		[ NNN ],
@@ -155,6 +181,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SE_VX_NN", # Skip next if Vx == NN
 		&"3XNN",
+		"SE V%X, 0x%X",
+		"if v%x != 0x%X then",
 		0xf000,
 		0x3000,
 		[ X, NN ],
@@ -166,6 +194,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SNE_VX_NN", # Skip next if Vx != NN
 		&"4XNN",
+		"SNE V%X, 0x%X",
+		"if v%x == 0x%X then",
 		0xf000,
 		0x4000,
 		[ X, NN ],
@@ -177,6 +207,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SE_VX_VY", # Skip next if Vx == Vy
 		&"5XY0",
+		"SE V%X, V%X",
+		"if v%x != v%x then",
 		0xf00f,
 		0x5000,
 		[ X, Y ],
@@ -188,6 +220,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_VX_NN", # Vx = NN
 		&"6XNN",
+		"LD V%X, 0x%X",
+		"v%x := 0x%X",
 		0xf000,
 		0x6000,
 		[ X, NN ],
@@ -198,6 +232,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"ADD_VX_NN", # Vx += NN
 		&"7XNN",
+		"ADD V%X, 0x%X",
+		"v%x += 0x%X",
 		0xf000,
 		0x7000,
 		[ X, NN ],
@@ -210,6 +246,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_VX_VY", # Vx = Vy
 		&"8XY0",
+		"LD V%X, V%X",
+		"v%x := v%x",
 		0xf00f,
 		0x8000,
 		[ X, Y ],
@@ -220,6 +258,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"OR_VX_VY", # Vx |= Vy
 		&"8XY1",
+		"OR V%X, V%X",
+		"v%x |= v%x",
 		0xf00f,
 		0x8001,
 		[ X, Y ],
@@ -231,6 +271,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"AND_VX_VY", # Vx &= Vy
 		&"8XY2",
+		"AND V%X, V%X",
+		"v%x &= v%x",
 		0xf00f,
 		0x8002,
 		[ X, Y ],
@@ -242,6 +284,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"XOR_VX_VY", # Vx ^= Vy
 		&"8XY3",
+		"XOR V%X, V%X",
+		"v%x ^= v%x",
 		0xf00f,
 		0x8003,
 		[ X, Y ],
@@ -253,6 +297,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"ADD_VX_VY", # Vx += Vy
 		&"8XY4",
+		"ADD V%X, V%X",
+		"v%x += v%x",
 		0xf00f,
 		0x8004,
 		[ X, Y ],
@@ -268,6 +314,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SUB_VX_VY", # Vx -= Vy
 		&"8XY5",
+		"SUB V%X, V%X",
+		"v%x -= v%x",
 		0xf00f,
 		0x8005,
 		[ X, Y ],
@@ -280,6 +328,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SHR_VX_VY", # Vx >>= Vy
 		&"8XY6",
+		"SHR V%X, V%X",
+		"v%x >>= v%x",
 		0xf00f,
 		0x8006,
 		[ X, Y ],
@@ -293,6 +343,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SUBN_VX_VY", # Vx = Vy - Vx
 		&"8XY7",
+		"SUBN V%X, V%X",
+		"v%x =- v%x",
 		0xf00f,
 		0x8007,
 		[ X, Y ],
@@ -305,6 +357,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SHL_VX_VY", # Vx <<= Vy
 		&"8XYE",
+		"SHL V%X, V%X",
+		"v%x <<= v%x",
 		0xf00f,
 		0x800E,
 		[ X, Y ],
@@ -320,6 +374,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SNE_VX_VY", # Skip next if Vx != Vy
 		&"9XY0",
+		"SNE V%X, V%X",
+		"if v%x == v%x then",
 		0xf00f,
 		0x9000,
 		[ X, Y ],
@@ -331,6 +387,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_I_ADDR", # Set I to point to ADDR
 		&"ANNN",
+		"LD I, 0x%X",
+		"i := 0x%X",
 		0xf000,
 		0xA000,
 		[ NNN ],
@@ -341,6 +399,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"JP_V0_ADDR", # Jump to ADDR + V0
 		&"BNNN",
+		"%X|JP V0, 0x%X",
+		"%X|jump0 0x%X",
 		0xf000,
 		0xB000,
 		[ X, NNN ],
@@ -351,6 +411,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"RND_VX_NN", # Vx = randi() & NN
 		&"CXNN",
+		"RND V%X, 0x%X",
+		"v%x := random 0x%X",
 		0xf000,
 		0xC000,
 		[ X, NN ],
@@ -361,6 +423,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"DRW_VX_VY_N", # Draw N-byte sprite at mem pointer I at (Vx, Vy)
 		&"DXYN",
+		"DRW V%X, V%X, 0x%X",
+		"sprite v%x v%x 0x%X",
 		0xf000,
 		0xD000,
 		[ X, Y, N ],
@@ -410,6 +474,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SKP_VX", # Skip next if key Vx is pressed
 		&"EX9E",
+		"SKP V%X",
+		"if v%x -key then",
 		0xf0ff,
 		0xe09e,
 		[ X ],
@@ -421,6 +487,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SKNP_VX", # Skip next if key Vx is not pressed
 		&"EXA1",
+		"SKNP V%X",
+		"if v%x key then",
 		0xf0ff,
 		0xe0a1,
 		[ X ],
@@ -434,6 +502,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_VX_DT", # Vx = DT
 		&"FX07",
+		"LD V%X, DT",
+		"v%x := delay",
 		0xf0ff,
 		0xf007,
 		[ X ],
@@ -444,6 +514,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_VX_K", # Wait for key press, store key in Vx
 		&"FX0A",
+		"LD V%X, K",
+		"v%x := key",
 		0xf0ff,
 		0xf00a,
 		[ X ],
@@ -458,6 +530,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_DT_VX", # DT = Vx
 		&"FX15",
+		"LD DT, V%X",
+		"delay := v%x",
 		0xf0ff,
 		0xf015,
 		[ X ],
@@ -468,6 +542,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_ST_VX", # ST = Vx
 		&"FX18",
+		"LD ST, V%X",
+		"buzzer := v%x",
 		0xf0ff,
 		0xf018,
 		[ X ],
@@ -478,6 +554,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"ADD_I_VX", # I += Vx
 		&"FX1E",
+		"ADD I, V%X",
+		"i += v%x",
 		0xf0ff,
 		0xf01e,
 		[ X ],
@@ -490,6 +568,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_F_VX", # I = location of font character corresponding to digit in Vx
 		&"FX29",
+		"LD F, V%X",
+		"i := hex v%x",
 		0xf0ff,
 		0xf029,
 		[ X ],
@@ -500,6 +580,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_B_VX", # Break num in Vx into decimal digits, placed in memory locations I, I+1, I+2
 		&"FX33",
+		"LD B, V%X",
+		"bcd v%x",
 		0xf0ff,
 		0xf033,
 		[ X ],
@@ -515,6 +597,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_I_VX", # Store registers V0-Vx in memory starting at pointer I
 		&"FX55",
+		"LD I, V%X",
+		"save v%x",
 		0xf0ff,
 		0xf055,
 		[ X ],
@@ -530,6 +614,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LD_VX_I", # Read registers V0-Vx from memory starting at pointer I
 		&"FX65",
+		"LD V%X, I",
+		"load v%x",
 		0xf0ff,
 		0xf065,
 		[ X ],
@@ -545,6 +631,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"SAVEFLAGS_VX", # Save V0-Vx to flag registers
 		&"FX75",
+		"LD R, V%X",
+		"saveflags v%x",
 		0xf0ff,
 		0xf075,
 		[ X ],
@@ -556,6 +644,8 @@ var INSTRUCTION_SET = [
 	Instruction.new(
 		&"LOADFLAGS_VX", # Restore V0-Vx from flag registers
 		&"FX85",
+		"LD V%X, R",
+		"loadflags v%x",
 		0xf0ff,
 		0xf085,
 		[ X ],
@@ -570,13 +660,13 @@ var INSTRUCTION_SET = [
 func invalid_exec(cpu: CHIPDecoder):
 	push_error("Invalid opcode at 0x%X (%d)" % [cpu.PC - 2, cpu.PC - 2])
 
-var INVALID_INSTRUCTION := Instruction.new( &"INVALID", &"", 0, 0, [], invalid_exec )
+var INVALID_INSTRUCTION := Instruction.new( &"INVALID", &"", "", "", 0, 0, [], invalid_exec )
 
 func filter_instructions(instruction: Instruction, opcode: int) -> bool:
 	return (opcode & instruction.mask) == instruction.pattern
 
 
-func find(opcode: int) -> Instruction:
+func find(opcode: int, report_no_matches: bool = true) -> Instruction:
 	var matches := INSTRUCTION_SET.filter(filter_instructions.bind(opcode))
 	
 	if matches.size() > 1:
@@ -587,16 +677,18 @@ func find(opcode: int) -> Instruction:
 		return matches[0]
 	
 	elif matches.size() == 0:
-		push_error("No matches for opcode: 0x%X" % opcode)
+		if report_no_matches: push_error("No matches for opcode: 0x%X" % opcode)
 		var invalid := INVALID_INSTRUCTION.duplicate()
 		invalid.name = "%X" % opcode
+		invalid.asm = "0x" + invalid.name
+		invalid.octo = invalid.asm
 		return invalid
 	
 	else:
 		return matches[0]
 
-func disassemble(opcode) -> Opcode:
-	var instruction := find(opcode)
+func disassemble(opcode, report_no_matches: bool = true) -> Opcode:
+	var instruction := find(opcode, report_no_matches)
 	var op := Opcode.new(opcode, instruction)
 	
 	return op
@@ -605,21 +697,25 @@ func disassemble(opcode) -> Opcode:
 class Instruction:
 	var id: StringName
 	var name: StringName
+	var asm: String
+	var octo: String
 	var mask: int
 	var pattern: int
 	var arguments: Array[ArgumentType]
 	var exec: Callable
 	
-	func _init(_id: StringName, _name: StringName, _mask: int, _pattern: int, _args: Array[ArgumentType], _exec: Callable) -> void:
+	func _init(_id: StringName, _name: StringName, _asm: String, _octo: String, _mask: int, _pattern: int, _args: Array[ArgumentType], _exec: Callable) -> void:
 		id = _id
 		name = _name
+		asm = _asm
+		octo = _octo
 		mask = _mask
 		pattern = _pattern
 		arguments = _args
 		exec = _exec
 	
 	func duplicate() -> Instruction:
-		return Instruction.new(id, name, mask, pattern, arguments, exec)
+		return Instruction.new(id, name, asm, octo, mask, pattern, arguments, exec)
 
 class ArgumentType:
 	var mask: int
@@ -638,6 +734,8 @@ class Opcode:
 	var exec: Callable
 	var args: Array
 	var base: Instruction
+	var asm: String
+	var octo: String
 	
 	func _init(_opcode: int, instruction: Instruction):
 		opcode = _opcode
@@ -646,6 +744,12 @@ class Opcode:
 		base = instruction
 		args = map_args(opcode, instruction.arguments)
 		exec = instruction.exec.bindv( args )
+		
+		asm = instruction.asm % args
+		if "|" in asm: asm = asm.split("|")[1]
+		
+		octo = instruction.octo % args
+		if "|" in octo: octo = octo.split("|")[1]
 	
 	func map_args(_opcode: int, _args: Array) -> Array[int]:
 		var result: Array[int] = []

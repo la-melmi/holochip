@@ -1,0 +1,69 @@
+[gd_scene load_steps=6 format=3 uid="uid://uonxdon8bs3k"]
+
+[ext_resource type="Theme" uid="uid://c7om4y0ikehy2" path="res://resources/base_theme.tres" id="1_3togt"]
+[ext_resource type="Script" path="res://scenes/ui/scripts/disassembler.gd" id="2_ci0ll"]
+[ext_resource type="PackedScene" uid="uid://cxikvkhecay4j" path="res://scenes/ui/instruction.tscn" id="3_dtjfs"]
+[ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="4_swfa5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co61m"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.203922, 0.203922, 0.203922, 0.643137)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+anti_aliasing_size = 2.0
+
+[node name="Disassembler" type="Window"]
+position = Vector2i(0, 36)
+size = Vector2i(350, 300)
+wrap_controls = true
+transient = true
+min_size = Vector2i(100, 100)
+theme = ExtResource("1_3togt")
+script = ExtResource("2_ci0ll")
+instruction_scene = ExtResource("3_dtjfs")
+ram = ExtResource("4_swfa5")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.251087, 0.251087, 0.251087, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_co61m")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="OctoMode" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Octo Mode"
+
+[node name="SnapPC" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Keep PC Visible"
+
+[connection signal="close_requested" from="." to="." method="hide"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="toggled" from="VBoxContainer/SnapPC" to="." method="_on_snap_pc_toggled"]

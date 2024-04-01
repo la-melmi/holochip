@@ -6,6 +6,7 @@ signal custom_rom_dialog_opened
 signal memory_opened
 signal stack_opened
 signal registers_opened
+signal disassembler_opened
 
 signal vm_reset
 
@@ -18,6 +19,7 @@ enum {
 	DEBUG_MEMORY,
 	DEBUG_STACK,
 	DEBUG_REGISTERS,
+	DEBUG_DISASSEMBLER,
 }
 
 enum {
@@ -55,6 +57,8 @@ func _on_debug_id_pressed(id: int):
 			stack_opened.emit()
 		DEBUG_REGISTERS:
 			registers_opened.emit()
+		DEBUG_DISASSEMBLER:
+			disassembler_opened.emit()
 
 
 func _on_system_id_pressed(index: int):
@@ -64,7 +68,8 @@ func _on_system_id_pressed(index: int):
 	system.set_item_checked(index, true)
 	chip.quirks.system = index as QuirkHandler.System
 
-func _on_chip_ready() -> void:
+func _on_chip_ready(new_chip: CHIP8) -> void:
+	chip = new_chip
 	chip.quirks.legacy = options.is_item_checked( options.get_item_index(OPTIONS_LEGACY) )
 	for i in system.item_count:
 		if system.is_item_checked(i):
