@@ -1,6 +1,8 @@
 extends Window
 
 
+signal memory_selected(address: int)
+
 @export var byte_scene: PackedScene
 @export var ram: RAM
 
@@ -81,6 +83,7 @@ func _on_memory_selected(selection: PanelContainer) -> void:
 	for byte in container.get_children():
 		if byte != selection:
 			byte.selected = false
+	memory_selected.emit(selection.addr)
 
 func _on_unselect_all_memory() -> void:
 	for byte in container.get_children():

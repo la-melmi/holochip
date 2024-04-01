@@ -2,6 +2,8 @@ class_name Disassembler
 extends Window
 
 
+signal address_clicked(address: int)
+
 @export var instruction_scene: PackedScene
 @export var ram: RAM
 
@@ -42,6 +44,7 @@ func generate_instructions() -> void:
 		var instruction := instruction_scene.instantiate()
 		instruction.addr = addr
 		octo_mode.toggled.connect(instruction.update_asm)
+		instruction.address_clicked.connect(_on_child_address_clicked)
 		container.add_child(instruction)
 
 func refresh_instructions() -> void:
@@ -81,3 +84,11 @@ func _on_address_entered(address: int):
 	if address < ram.memory.size() and address >= 0:
 		@warning_ignore("integer_division")
 		scroll.ensure_control_visible( container.get_child( address / 2 ) )
+
+func _on_child_address_clicked(address: int):
+	address_clicked.emit(address)
+
+func _on_memory_selected(address: int):
+	print(address)
+	@warning_ignore("integer_division")
+	scroll.ensure_control_visible( container.get_child( address / 2 ) )

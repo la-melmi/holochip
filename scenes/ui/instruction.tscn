@@ -90,3 +90,5 @@ alignment = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_vlh34")
 text = "LD VX, [I]"
+
+[connection signal="clicked" from="PanelContainer/HBoxContainer/Address" to="." method="_on_address_clicked"]

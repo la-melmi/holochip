@@ -2,6 +2,8 @@ class_name InstructionDisplay
 extends HBoxContainer
 
 
+signal address_clicked(address: int)
+
 const INVALID := &"INVALID"
 
 var active: bool:
@@ -42,3 +44,7 @@ func update_asm(octo: bool):
 	var asm: String = instruction.octo if octo_mode else instruction.asm
 	
 	$PanelContainer/HBoxContainer/HBoxContainer/BoxContainer2/Instruction.text = asm
+
+
+func _on_address_clicked(address: int) -> void:
+	address_clicked.emit(address)
