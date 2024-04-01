@@ -105,3 +105,8 @@ func _on_snap_toggled(toggled_on: bool) -> void:
 func _on_chip_ready(_chip: CHIP8) -> void:
 	for addr in ram.memory.size():
 		_on_ram_written(addr)
+
+
+func _on_address_entered(address: int) -> void:
+	if address < ram.memory.size() and address > 0:
+		container.get_child(address).selected = true

@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://d16b3vclypg07"]
+[gd_scene load_steps=7 format=3 uid="uid://d16b3vclypg07"]
 
 [ext_resource type="Script" path="res://scenes/ui/scripts/memory_inspector.gd" id="1_cneei"]
 [ext_resource type="PackedScene" uid="uid://dpepveik1d4v" path="res://scenes/ui/memory_byte.tscn" id="2_g1r0q"]
 [ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="3_1oib0"]
 [ext_resource type="FontFile" uid="uid://wmn17fnwf4q4" path="res://assets/fonts/m6x11.ttf" id="4_g3vpl"]
+[ext_resource type="PackedScene" uid="uid://bwdprf6dcvmtp" path="res://scenes/ui/address_input.tscn" id="4_t8ms0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co61m"]
 content_margin_left = 6.0
@@ -50,6 +51,13 @@ layout_direction = 2
 layout_mode = 2
 columns = 16
 
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="AddressInput" parent="VBoxContainer/HBoxContainer" instance=ExtResource("4_t8ms0")]
+layout_mode = 2
+
 [node name="Snap" type="CheckBox" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("4_g3vpl")
@@ -57,4 +65,5 @@ text = "Keep PC Visible"
 
 [connection signal="close_requested" from="." to="." method="hide"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="address_entered" from="VBoxContainer/HBoxContainer/AddressInput" to="." method="_on_address_entered"]
 [connection signal="toggled" from="VBoxContainer/Snap" to="." method="_on_snap_toggled"]

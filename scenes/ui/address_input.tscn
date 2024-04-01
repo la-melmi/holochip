@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwdprf6dcvmtp"]
+
+[ext_resource type="Script" path="res://scenes/ui/scripts/address_input.gd" id="1_ouuxa"]
+
+[node name="AddressInput" type="TextEdit"]
+custom_minimum_size = Vector2(38, 30)
+placeholder_text = "0000"
+script = ExtResource("1_ouuxa")

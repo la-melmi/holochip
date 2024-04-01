@@ -75,3 +75,9 @@ func toggle() -> void:
 func _on_visibility_changed():
 	if visible and not refreshed:
 		refresh_instructions()
+
+
+func _on_address_entered(address: int):
+	if address < ram.memory.size() and address >= 0:
+		@warning_ignore("integer_division")
+		scroll.ensure_control_visible( container.get_child( address / 2 ) )

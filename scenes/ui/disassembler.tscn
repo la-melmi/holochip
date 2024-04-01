@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://uonxdon8bs3k"]
+[gd_scene load_steps=7 format=3 uid="uid://uonxdon8bs3k"]
 
 [ext_resource type="Theme" uid="uid://c7om4y0ikehy2" path="res://resources/base_theme.tres" id="1_3togt"]
 [ext_resource type="Script" path="res://scenes/ui/scripts/disassembler.gd" id="2_ci0ll"]
 [ext_resource type="PackedScene" uid="uid://cxikvkhecay4j" path="res://scenes/ui/instruction.tscn" id="3_dtjfs"]
 [ext_resource type="Resource" uid="uid://bp3u0my8pjgxl" path="res://resources/ram.tres" id="4_swfa5"]
+[ext_resource type="PackedScene" uid="uid://bwdprf6dcvmtp" path="res://scenes/ui/address_input.tscn" id="5_085io"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_co61m"]
 content_margin_left = 6.0
@@ -55,6 +56,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="AddressInput" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_085io")]
+layout_mode = 2
 
 [node name="OctoMode" type="CheckButton" parent="VBoxContainer"]
 layout_mode = 2
