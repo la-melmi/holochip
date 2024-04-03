@@ -15,6 +15,7 @@ signal chip_ready(new_chip: CHIP8)
 @onready var menu_bar: MenuBar = $VBoxContainer/EmulatorMenu
 
 var chip: CHIP8
+var instruction_cache: Dictionary
 
 func _ready() -> void:
 	init_chip()
@@ -42,6 +43,7 @@ func init_chip() -> void:
 	chip = chip_scene.instantiate()
 	chip.rom = rom
 	chip.size_flags_vertical = SIZE_EXPAND_FILL
+	chip.control_unit.instruction_cache = instruction_cache
 	
 	main_container.add_child(chip)
 	chip_ready.emit(chip)
