@@ -93,9 +93,9 @@ func _on_vm_id_pressed(id: int):
 				vm.set_item_disabled( vm.get_item_index(VM_STEP), true )
 				vm.set_item_disabled( vm.get_item_index(VM_FRAME_STEP), true )
 		VM_STEP:
-			chip.clock.step = true
+			chip.clock.tick()
 		VM_FRAME_STEP:
-			chip.clock.frame_step = 2
+			while not await chip.clock.tick(): pass
 
 
 func _on_options_id_pressed(id: int):
