@@ -39,6 +39,9 @@ func poll_all_interrupts() -> Array[Variant]:
 
 
 func block_until(index: int, allow_current: bool = false) -> Variant:
-	while _interrupts[index] and allow_current: pass
-	while not _interrupts[index]: pass
+	if allow_current and _interrupts[index]: return _interrupts[index]
+	
+	var received: int = 0
+	while received != index:
+		received = await interrupt_sent
 	return _interrupts[index]

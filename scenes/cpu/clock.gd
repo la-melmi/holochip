@@ -62,50 +62,20 @@ func _process(_delta) -> void:
 		
 		while (time - _last_tick) >= _tick_interval:
 			_last_tick += _tick_interval
-			semaphore.post()
+			#semaphore.post()
+			await tick()
 
 
 ## Start a thread to handle [method loop]
-func start() -> void:
-	if thread: stop()
-	thread = Thread.new()
-	thread.start(loop)
-	
+func start() -> void:	
 	# Reset the clock
-	_last_tick = Time.get_ticks_usec() 
+	_last_tick = Time.get_ticks_usec()
+	await get_tree().process_frame
+	running = true
 
 ## Handle stopping and cleaning up the loop worker thread
 func stop() -> void:
 	running = false
-	if thread and thread.is_alive():
-		semaphore.post() # This is necessary to ensure the thread doesn't keep blocking
-		thread.wait_to_finish()
-
-
-## Loop indefinitely and consume requests for cycles, then run [method tick]
-func loop() -> void:
-	semaphore = Semaphore.new()
-	running = true
-	
-	while running:
-		# Wait for a cycle request
-		semaphore.wait()
-		
-		# If we're not paused, just tick and continue waiting
-		if not paused:
-			tick()
-			continue
-		
-		# If we are paused, check if we're in a frame step. If we are, tick, but if a
-		# refresh occurs then end the frame step
-		if frame_step:
-			frame_step = not tick()
-		
-		# If we aren't in a frame step, but we are in a regular step, just do a single tick
-		# and then end the step
-		elif step:
-			tick()
-			step = false
 
 ## Progress the clock by one cycle. Returns true if this was a refresh tick.
 func tick() -> bool:
@@ -116,10 +86,10 @@ func tick() -> bool:
 	
 	if refresh:
 		for callback in timer_pulse:
-			callback.call()
+			await callback.call()
 	
 	for callback in clock_pulse:
-		callback.call()
+		await callback.call()
 	
 	interrupt_controller.acknowledge()
 	
