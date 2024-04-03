@@ -1,12 +1,6 @@
 class_name Clock
 extends Node
 
-enum Mode {
-	IDLE,
-	THREAD,
-	PHYSICS,
-}
-
 ## Clock speed in Hz
 @export var clockspeed: float:
 	set(speed):
@@ -14,144 +8,119 @@ enum Mode {
 		_tick_interval = int(1000000.0 / speed)
 		_cycles_per_frame = int(speed / 60.0)
 
-@export var running_mode: Mode
-
 @export var paused: bool = false
-
-@export var log_time_loss: bool
 
 @export var interrupt_controller: InterruptController
 
+## Track whether the clock is currently running. If this is set to false, thread will finish
+## after next clock tick.
+var running: bool
+
+## The duration of a single tick in microseconds
+var _tick_interval: int
+
+## Number of cycles that should occur between frame refreshes
 var _cycles_per_frame: int
 
-var _tick_interval: int
-var _timer_interval := int(1000000.0 / 60.0)
+## Cycles that have elapsed since the last frame refresh
+var _cycles_elapsed: int
 
-var callbacks: Array[Callable]
-var timer_callbacks: Array[Callable]
-var running: bool
+## The time in usec that the last clock tick occured at
+var _last_tick: int
+
+## The thread [method loop] runs in
+var thread: Thread
+
+## Semaphore representing requests for clock cycles to be processed
+var semaphore: Semaphore
+
+## Because signals don't work in threads, we use this array of Callables. These callbacks
+## are called at the rate determined by [member clockspeed]
+var clock_pulse: Array[Callable]
+
+## Because signals don't work in threads, we use this array of Callables. These callbacks
+## are called at 60 Hz.
+var timer_pulse: Array[Callable]
+
+## When set to true, will step a single tick forward and then be set false.
 var step: bool
 
-var frame_step: int
-
-var drawn: bool
-
-var thread: Thread
+## When set to true, will step until a timer tick occurs and then be set false.
+var frame_step: bool
 
 func _ready() -> void:
 	clockspeed = clockspeed
 
-func _exit_tree() -> void:
-	stop()
-
-func _input(event) -> void:
-	if event.is_action_pressed("step"):
-		step = true
-	if event.is_action_pressed("pause"):
-		paused = not paused
-	if event.is_action_pressed("frame_step"):
-		frame_step = 2
-		print("woop")
-
-
-func stop() -> void:
-	running = false
-	if thread:
-		if thread.is_alive(): thread.wait_to_finish()
-
-func start() -> void:
-	if running_mode == Mode.THREAD:
-		if thread: stop()
-		
-		thread = Thread.new()
-		thread.start(loop)
-	else:
-		running = true
-
-
-var last_tick: int = 0
-var last_timer_tick: int = 0
-
-func loop() -> void:
-	running = true
-	
-	var last: int = 0
-	
-	while running:
-		if not drawn: continue
-		if paused and not (step or frame_step): continue
-		
-		var time := Time.get_ticks_usec()
-		if time == last: continue
-		
-		if (time - last_timer_tick) >= _timer_interval:
-			last_timer_tick = time
-			for callback in timer_callbacks:
-				callback.call()
-		
-		var time_diff := time - last_tick
-		if time_diff >= _tick_interval:
-			if log_time_loss and time_diff != _tick_interval:
-				var time_loss := time_diff - _tick_interval
-				if time_loss > 1000 and clockspeed != 0:
-					push_warning("Time loss of %d usec!" % time_loss)
-				elif time_loss < -1000 and clockspeed != 0:
-					push_warning("Time gain of %d usec!" % -time_loss)
-			last_tick = time
-			
-			for callback in callbacks:
-				callback.call()
-			
-			interrupt_controller.acknowledge()
-		
-		last = time
-		step = false
-
-func _physics_process(_delta) -> void:
-	if drawn and running and running_mode == Mode.PHYSICS and not paused:
-		for callback in timer_callbacks:
-			await callback.call()
-		
-		for i in _cycles_per_frame:
-			for callback in callbacks:
-				await callback.call()
-			interrupt_controller.acknowledge()
-
 func _process(_delta) -> void:
-	if drawn and running and running_mode == Mode.IDLE:
+	if running:
 		var time := Time.get_ticks_usec()
 		
-		if paused and not (step or frame_step):
-			last_tick = time
-			last_timer_tick = time
+		if paused:
+			# If we're paused, don't count intervening time
+			_last_tick = time
 			return
 		
-		while (time - last_timer_tick) >= _timer_interval:
-			last_timer_tick += _timer_interval
-			for callback in timer_callbacks:
-				await callback.call()
-			if step: break
-		
-		while (time - last_tick) >= _tick_interval:
-			if (time - last_timer_tick) >= _timer_interval:
-				last_timer_tick += _timer_interval
-				for callback in timer_callbacks:
-					await callback.call()
-			
-			last_tick += _tick_interval
-			for callback in callbacks:
-				await callback.call()
-			
-			interrupt_controller.acknowledge()
-			
-			if step: break
-		
-		step = false
-		if frame_step == 2: frame_step = 1
+		while (time - _last_tick) >= _tick_interval:
+			_last_tick += _tick_interval
+			semaphore.post()
 
-func _on_display_resized() -> void:
-	drawn = true
 
-func _on_display_refreshed():
-	if frame_step == 1:
-		frame_step = 0
+## Start a thread to handle [method loop]
+func start() -> void:
+	if thread: stop()
+	thread = Thread.new()
+	thread.start(loop)
+	
+	# Reset the clock
+	_last_tick = Time.get_ticks_usec() 
+
+## Handle stopping and cleaning up the loop worker thread
+func stop() -> void:
+	running = false
+	if thread and thread.is_alive():
+		semaphore.post() # This is necessary to ensure the thread doesn't keep blocking
+		thread.wait_to_finish()
+
+
+## Loop indefinitely and consume requests for cycles, then run [method tick]
+func loop() -> void:
+	semaphore = Semaphore.new()
+	running = true
+	
+	while running:
+		# Wait for a cycle request
+		semaphore.wait()
+		
+		# If we're not paused, just tick and continue waiting
+		if not paused:
+			tick()
+			continue
+		
+		# If we are paused, check if we're in a frame step. If we are, tick, but if a
+		# refresh occurs then end the frame step
+		if frame_step:
+			frame_step = not tick()
+		
+		# If we aren't in a frame step, but we are in a regular step, just do a single tick
+		# and then end the step
+		elif step:
+			tick()
+			step = false
+
+## Progress the clock by one cycle. Returns true if this was a refresh tick.
+func tick() -> bool:
+	_cycles_elapsed += 1
+	_cycles_elapsed %= _cycles_per_frame
+	
+	var refresh := (_cycles_elapsed == 0)
+	
+	if refresh:
+		for callback in timer_pulse:
+			callback.call()
+	
+	for callback in clock_pulse:
+		callback.call()
+	
+	interrupt_controller.acknowledge()
+	
+	return refresh

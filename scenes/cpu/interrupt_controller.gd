@@ -39,13 +39,6 @@ func poll_all_interrupts() -> Array[Variant]:
 
 
 func block_until(index: int, allow_current: bool = false) -> Variant:
-	if clock.running_mode == clock.Mode.THREAD:
-		while _interrupts[index] and allow_current: pass
-		while not _interrupts[index]: pass
-		return _interrupts[index]
-	
-	else:
-		var received: int = 0
-		while received != index:
-			received = await interrupt_sent
-		return _interrupts[index]
+	while _interrupts[index] and allow_current: pass
+	while not _interrupts[index]: pass
+	return _interrupts[index]

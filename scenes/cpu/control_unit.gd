@@ -47,8 +47,8 @@ func _ready() -> void:
 	
 	V.resize(16)
 	
-	clock.callbacks.append(step)
-	clock.timer_callbacks.append(timer_tick)
+	clock.clock_pulse.append(step)
+	clock.timer_pulse.append(timer_tick)
 
 
 func timer_tick() -> void:

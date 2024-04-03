@@ -32,7 +32,6 @@ control_unit = NodePath("ControlUnit")
 [node name="Clock" type="Node" parent="." node_paths=PackedStringArray("interrupt_controller")]
 script = ExtResource("6_mfduj")
 clockspeed = 60000.0
-log_time_loss = true
 interrupt_controller = NodePath("../InterruptController")
 
 [node name="Keypad" type="Node" parent="."]
@@ -59,7 +58,7 @@ volume_db = -20.329
 script = ExtResource("9_bxxct")
 control_unit = NodePath("../ControlUnit")
 
-[node name="Display" type="TextureRect" parent="."]
+[node name="Display" type="TextureRect" parent="." node_paths=PackedStringArray("clock")]
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
@@ -74,6 +73,7 @@ stretch_mode = 5
 script = ExtResource("3_8hwfk")
 width = 64
 height = 32
+clock = NodePath("../Clock")
 
 [node name="Quirks" type="Node" parent="." node_paths=PackedStringArray("display")]
 script = ExtResource("11_6gosw")
