@@ -575,6 +575,18 @@ var INSTRUCTION_SET = [
 			),
 	
 	Instruction.new(
+		&"LD_HF_VX", # I = location of large font character corresponding to digit in Vx
+		&"FX30",
+		"LD HF, V%X",
+		"i := bighex v%x",
+		0xf0ff,
+		0xf030,
+		[ X ],
+		func LD_HF_VX(cpu: CHIPDecoder, x: int):
+			cpu.I = 0x50 + (cpu.V[x] * 10)
+			),
+	
+	Instruction.new(
 		&"LD_B_VX", # Break num in Vx into decimal digits, placed in memory locations I, I+1, I+2
 		&"FX33",
 		"LD B, V%X",
