@@ -215,6 +215,32 @@ var INSTRUCTION_SET = [
 			),
 	
 	Instruction.new(
+		&"SAVE_VX_VY", # Save an inclusive range of registers to memory starting at I.
+		&"5XY2",
+		"SV V%X - V%X",
+		"save v%x - v%x",
+		0xf00f,
+		0x5002,
+		[ X, Y ],
+		func SAVE_VX_VY(cpu: CHIPDecoder, x: int, y: int):
+			for i in range(x, y+1):
+				cpu.ram.write(cpu.I + i, cpu.V[i])
+			),
+	
+	Instruction.new(
+		&"LOAD_VX_VY", # Load an inclusive range of registers from memory starting at I.
+		&"5XY3",
+		"LD V%X - V%X",
+		"load v%x - v%x",
+		0xf00f,
+		0x5003,
+		[ X, Y ],
+		func LOAD_VX_VY(cpu: CHIPDecoder, x: int, y: int):
+			for i in range(x, y+1):
+				cpu.ram.write(cpu.I + i, cpu.V[i])
+			),
+	
+	Instruction.new(
 		&"LD_VX_NN", # Vx = NN
 		&"6XNN",
 		"LD V%X, 0x%X",
